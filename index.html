@@ -131,10 +131,13 @@
         </div>
     </div>
 
-    <div class="input-group">
-        <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
-        <button class="add-btn" onclick="addTask()">+</button>
-    </div>
+   <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
+<select id="task-category" style="padding: 12px; border-radius: 8px; background-color: #2c2c2c; color: white; border: none; outline: none; cursor: pointer;">
+    <option value="работа">💼 Работа</option>
+    <option value="учеба">📚 Учеба</option>
+    <option value="личное">🏠 Личное</option>
+</select>
+<button onclick="addTask()">+</button>
 
     <ul id="task-list"></ul>
 
@@ -215,19 +218,49 @@
         document.getElementById('progress-fill').style.width = `${percentage}%`;
     }
 
-    function addTask() {
-        const text = taskInput.value.trim();
-        if (text !== '') {
-            tasks.push({ text: text, completed: false });
-            taskInput.value = '';
-            renderTasks();
-        }
+            function renderTasks() {
+        taskList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            if (task.completed) li.classList.add('completed');
+
+            // 1. Цветная полоска категории
+            const colorBar = document.createElement('div');
+            colorBar.style.width = '5px';
+            colorBar.style.height = '100%';
+            colorBar.style.borderRadius = '5px';
+            colorBar.style.marginRight = '10px';
+
+            if (task.category === 'работа') colorBar.style.backgroundColor = '#bb86fc';
+            else if (task.category === 'учеба') colorBar.style.backgroundColor = '#03dac6';
+            else colorBar.style.backgroundColor = '#ffb74d';
+
+            li.appendChild(colorBar);
+
+            // 2. Текст задачи
+            const span = document.createElement('span');
+            span.className = 'task-text';
+            span.innerText = task.text;
+            span.onclick = () => toggleTask(index);
+
+            // 3. Кнопка удаления
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerText = '×';
+            deleteBtn.onclick = () => deleteTask(index);
+
+            // Собираем карточку
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            taskList.appendChild(li);
+        });
+
+        // Сохраняем в память
+        localStorage.setItem('myTasks', JSON.stringify(tasks));
+
+        // Если у тебя есть функция обновления прогресса (счетчика), она должна быть здесь
+        // Например: updateProgress();
     }
-
-    taskInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') addTask();
-    });
-
     function toggleTask(index) {
         tasks[index].completed = !tasks[index].completed;
         renderTasks();
