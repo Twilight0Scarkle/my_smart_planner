@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой умный планер</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .planner-container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 { margin-top: 0; color: #bb86fc; }
+        .date-display { font-size: 14px; color: #888; margin-bottom: 20px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #2c2c2c;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+        input[type="text"]:focus { background-color: #3a3a3a; }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #bb86fc;
+            color: #121212;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #9a67ea; }
+        ul { list-style-type: none; padding: 0; margin: 0; }
+        li {
+            background-color: #2c2c2c;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:hover { background-color: #3a3a3a; }
+        .delete-btn {
+            background: none;
+            color: #cf6679;
+            font-size: 20px;
+            padding: 0;
+            cursor: pointer;
+        }
+        .completed span { text-decoration: line-through; color: #666; }
+        .completed { opacity: 0.7; }
+        .task-text { cursor: pointer; flex: 1; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="planner-container">
+    <h2 id="greeting">Привет!</h2>
+    <div class="date-display" id="current-date"></div>
+    <div class="input-group">
+        <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
+        <button onclick="addTask()">+</button>
+    </div>
+    <ul id="task-list"></ul>
+</div>
+
+<script>
+    const now = new Date();
+    const hours = now.getHours();
+    let greetingText = "Доброй ночи!";
+    if (hours >= 5 && hours < 12) greetingText = "Доброе утро!";
+    else if (hours >= 12 && hours < 18) greetingText = "Добрый день!";
+    else if (hours >= 18 && hours < 23) greetingText = "Добрый вечер!";
+
+    document.getElementById('greeting').innerText = greetingText;
+    document.getElementById('current-date').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    const taskInput = document.getElementById('task-input');
+    const taskList = document.getElementById('task-list');
+
+    let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
+
+    function renderTasks() {
+        taskList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            if (task.completed) li.classList.add('completed');
+            const span = document.createElement('span');
+            span.className = 'task-text';
+            span.innerText = task.text;
+            span.onclick = () => toggleTask(index);
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerText = '×';
+            deleteBtn.onclick = () => deleteTask(index);
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            taskList.appendChild(li);
+        });
+        localStorage.setItem('myTasks', JSON.stringify(tasks));
+    }
+
+    function addTask() {
+        const text = taskInput.value.trim();
+        if (text !== '') {
+            tasks.push({ text: text, completed: false });
+            taskInput.value = '';
+            renderTasks();
+        }
+    }
+
+    taskInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') addTask();
+    });
+
+    function toggleTask(index) {
+        tasks[index].completed = !tasks[index].completed;
+        renderTasks();
+    }
+
+    function deleteTask(index) {
+        tasks.splice(index, 1);
+        renderTasks();
+    }
+
+    renderTasks();
+</script>
+
+</body>
+</html>
