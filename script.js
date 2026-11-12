@@ -86,8 +86,10 @@ function renderTasks() {
 function addTask() {
     const text = taskInput.value.trim();
     const category = document.getElementById('task-category').value;
+    const date = document.getElementById('task-date').value; // Новая строчка
+
     if (text !== '') {
-        tasks.push({ text: text, completed: false, category: category });
+        tasks.push({ text: text, completed: false, category: category, date: date }); // Добавили date
         taskInput.value = '';
         renderTasks();
     }

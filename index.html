@@ -32,15 +32,18 @@
         </div>
 
         <!-- Ввод -->
-        <div class="input-group">
-            <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
-            <select id="task-category">
-                <option value="работа">💼 Работа</option>
-                <option value="учеба">📚 Учеба</option>
-                <option value="личное">🏠 Личное</option>
-            </select>
-            <button onclick="addTask()">+</button>
-        </div>
+       <div class="input-group" style="flex-wrap: wrap;">
+    <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off" style="flex: 1 1 100%; margin-bottom: 10px;">
+    <div style="display: flex; gap: 10px; width: 100%;">
+        <select id="task-category" style="flex: 1;">
+            <option value="работа">💼 Работа</option>
+            <option value="учеба">📚 Учеба</option>
+            <option value="личное">🏠 Личное</option>
+        </select>
+        <input type="date" id="task-date" style="padding: 12px; border-radius: 8px; background-color: #2c2c2c; color: white; border: none; outline: none; cursor: pointer; flex: 1;">
+        <button onclick="addTask()">+</button>
+    </div>
+</div>
 
         <ul id="task-list"></ul>
 
