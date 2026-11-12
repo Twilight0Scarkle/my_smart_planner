@@ -113,4 +113,77 @@ function clearCompleted() {
 }
 
 // Запуск при загрузке
-renderTasks();
+renderTasks(<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой умный планер</title>
+    <!-- Подключаем наши стили -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Меню навигации -->
+    <div class="nav-menu">
+        <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">📝 Мои задачи</button>
+        <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">📅 Календарь</button>
+    </div>
+
+    <!-- Экран 1: Задачи -->
+    <div class="planner-container" id="tab-tasks">
+        <h2 id="greeting">Привет!</h2>
+        <div class="date-display" id="current-date"></div>
+
+        <!-- Прогресс -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>Прогресс дня:</span>
+                <span id="progress-count">0 / 0</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Ввод -->
+        <div class="input-group">
+            <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
+            <select id="task-category">
+                <option value="работа">💼 Работа</option>
+                <option value="учеба">📚 Учеба</option>
+                <option value="личное">🏠 Личное</option>
+            </select>
+            <button onclick="addTask()">+</button>
+        </div>
+
+        <ul id="task-list"></ul>
+
+        <button class="clear-btn" onclick="clearCompleted()">Удалить выполненные</button>
+    </div>
+
+       <!-- Экран 2: Календарь -->
+    <div class="planner-container" id="tab-calendar" style="max-width: 800px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Календарь</h2>
+            <div style="font-size: 18px; font-weight: bold; color: #bb86fc;" id="calendar-month-year">Загрузка...</div>
+        </div>
+
+        <!-- Сетка календаря -->
+        <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+            <!-- Дни недели -->
+            <div style="color: #888; font-weight: bold;">Пн</div>
+            <div style="color: #888; font-weight: bold;">Вт</div>
+            <div style="color: #888; font-weight: bold;">Ср</div>
+            <div style="color: #888; font-weight: bold;">Чт</div>
+            <div style="color: #888; font-weight: bold;">Пт</div>
+            <div style="color: #888; font-weight: bold;">Сб</div>
+            <div style="color: #888; font-weight: bold;">Вс</div>
+            <!-- Сюда JavaScript вставит сами дни -->
+        </div>
+    </div>
+
+    <!-- Подключаем наш скрипт в самом конце! -->
+    <script src="script.js"></script>
+</body>
+</html>);

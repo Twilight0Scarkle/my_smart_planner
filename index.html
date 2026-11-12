@@ -48,9 +48,25 @@
     </div>
 
     <!-- Экран 2: Календарь (Пока пустой) -->
-    <div class="planner-container" id="tab-calendar">
-        <h2>Календарь</h2>
-        <p style="color: #888;">Здесь скоро появится сетка календаря...</p>
+        <!-- Экран 2: Календарь -->
+    <div class="planner-container" id="tab-calendar" style="max-width: 800px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Календарь</h2>
+            <div style="font-size: 18px; font-weight: bold; color: #bb86fc;" id="calendar-month-year">Загрузка...</div>
+        </div>
+
+        <!-- Сетка календаря -->
+        <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+            <!-- Дни недели -->
+            <div style="color: #888; font-weight: bold;">Пн</div>
+            <div style="color: #888; font-weight: bold;">Вт</div>
+            <div style="color: #888; font-weight: bold;">Ср</div>
+            <div style="color: #888; font-weight: bold;">Чт</div>
+            <div style="color: #888; font-weight: bold;">Пт</div>
+            <div style="color: #888; font-weight: bold;">Сб</div>
+            <div style="color: #888; font-weight: bold;">Вс</div>
+            <!-- Сюда JavaScript вставит сами дни -->
+        </div>
     </div>
 
     <!-- Подключаем наш скрипт в самом конце! -->
