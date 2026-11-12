@@ -1,0 +1,96 @@
+/* Базовые настройки */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 60px; /* Место для верхнего меню */
+}
+
+/* Навигация (вкладки) */
+.nav-menu {
+    position: absolute;
+    top: 20px;
+    display: flex;
+    gap: 10px;
+}
+.nav-btn {
+    background-color: #2c2c2c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+}
+.nav-btn:hover { background-color: #3a3a3a; }
+.nav-btn.active { background-color: #bb86fc; color: #121212; font-weight: bold; }
+
+/* Карточка планера */
+.planner-container {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+h2 { margin-top: 0; color: #bb86fc; }
+.date-display { font-size: 14px; color: #888; margin-bottom: 20px; }
+
+/* Ввод задач */
+.input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+input[type="text"] {
+    flex: 1; padding: 12px; border: none; border-radius: 8px;
+    background-color: #2c2c2c; color: white; font-size: 16px; outline: none;
+}
+input[type="text"]:focus { background-color: #3a3a3a; }
+select {
+    padding: 12px; border-radius: 8px; background-color: #2c2c2c;
+    color: white; border: none; outline: none; cursor: pointer;
+}
+button {
+    padding: 12px 20px; border: none; border-radius: 8px;
+    background-color: #bb86fc; color: #121212; font-weight: bold;
+    font-size: 16px; cursor: pointer; transition: background-color 0.2s;
+}
+button:hover { background-color: #9a67ea; }
+
+/* Список задач */
+ul { list-style-type: none; padding: 0; margin: 0; }
+li {
+    background-color: #2c2c2c; padding: 15px; margin-bottom: 10px;
+    border-radius: 8px; display: flex; justify-content: space-between;
+    align-items: center; overflow: hidden; position: relative;
+}
+li:hover { background-color: #3a3a3a; }
+.delete-btn {
+    background: none; color: #cf6679; font-size: 20px;
+    padding: 0; cursor: pointer;
+}
+.delete-btn:hover { color: #ff5252; }
+.completed span { text-decoration: line-through; color: #666; }
+.completed { opacity: 0.7; }
+.task-text { cursor: pointer; flex: 1; margin-left: 10px; z-index: 2; }
+
+/* Прогресс и кнопки */
+.progress-container { margin-bottom: 20px; }
+.progress-text { font-size: 14px; color: #888; display: flex; justify-content: space-between; margin-bottom: 5px;}
+.progress-bar-bg { background-color: #2c2c2c; height: 8px; border-radius: 4px; overflow: hidden; }
+.progress-bar-fill { background-color: #bb86fc; height: 100%; width: 0%; transition: width 0.3s; }
+.clear-btn {
+    width: 100%; margin-top: 15px; background-color: transparent;
+    border: 1px solid #cf6679; color: #cf6679;
+}
+.clear-btn:hover { background-color: rgba(207, 102, 121, 0.1); }
+
+/* Заглушка для календаря */
+#tab-calendar { display: none; text-align: center; }

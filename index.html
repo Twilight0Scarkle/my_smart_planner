@@ -4,281 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мой умный планер</title>
-    <style>
-        /* ПЕРЕМЕННЫЕ ДЛЯ ТЕМ */
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --text-muted: #888;
-            --primary: #bb86fc;
-            --primary-hover: #9a67ea;
-            --danger: #cf6679;
-            --input-bg: #2c2c2c;
-        }
-
-        body.light-theme {
-            --bg-color: #f4f4f9;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --text-muted: #777777;
-            --primary: #6200ea;
-            --primary-hover: #3700b3;
-            --danger: #b00020;
-            --input-bg: #e0e0e0;
-        }
-
-        /* БАЗОВЫЕ СТИЛИ */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .planner-container {
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 500px;
-            transition: background-color 0.3s;
-        }
-
-        /* ШАПКА */
-        .header-top { display: flex; justify-content: space-between; align-items: center; }
-        h2 { margin: 0; color: var(--primary); }
-        .date-display { font-size: 14px; color: var(--text-muted); margin-bottom: 15px; }
-
-        #theme-toggle {
-            background: none; border: none; font-size: 24px; cursor: pointer; padding: 0;
-            transition: transform 0.2s;
-        }
-        #theme-toggle:hover { transform: scale(1.1); }
-
-        /* ПРОГРЕСС И СЧЕТЧИК */
-        .progress-container { margin-bottom: 20px; }
-        .progress-text { font-size: 14px; margin-bottom: 5px; display: flex; justify-content: space-between; }
-        .progress-bar-bg { background-color: var(--input-bg); height: 8px; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background-color: var(--primary); width: 0%; transition: width 0.3s; }
-
-        /* ВВОД */
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] {
-            flex: 1; padding: 12px; border: none; border-radius: 8px;
-            background-color: var(--input-bg); color: var(--text-color);
-            font-size: 16px; outline: none; transition: background-color 0.3s;
-        }
-        button.add-btn {
-            padding: 12px 20px; border: none; border-radius: 8px;
-            background-color: var(--primary); color: #121212;
-            font-weight: bold; font-size: 16px; cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        button.add-btn:hover { background-color: var(--primary-hover); }
-
-        /* СПИСОК ЗАДАЧ */
-        ul { list-style-type: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto; }
-        li {
-            background-color: var(--input-bg); padding: 15px; margin-bottom: 10px;
-            border-radius: 8px; display: flex; justify-content: space-between;
-            align-items: center; animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .delete-btn { background: none; border: none; color: var(--danger); font-size: 20px; cursor: pointer; }
-        .task-text { cursor: pointer; flex: 1; margin-left: 10px; transition: color 0.3s; }
-
-        .completed span { text-decoration: line-through; color: var(--text-muted); }
-        .completed { opacity: 0.6; }
-
-        /* КНОПКА ОЧИСТКИ */
-        .clear-btn {
-            width: 100%; padding: 10px; margin-top: 15px; border: 1px solid var(--danger);
-            background: transparent; color: var(--danger); border-radius: 8px;
-            cursor: pointer; font-weight: bold; transition: all 0.2s;
-        }
-        .clear-btn:hover { background: var(--danger); color: white; }
-    </style>
+    <!-- Подключаем наши стили -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="planner-container">
-    <div class="header-top">
+    <!-- Меню навигации -->
+    <div class="nav-menu">
+        <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">📝 Мои задачи</button>
+        <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">📅 Календарь</button>
+    </div>
+
+    <!-- Экран 1: Задачи -->
+    <div class="planner-container" id="tab-tasks">
         <h2 id="greeting">Привет!</h2>
-        <button id="theme-toggle" title="Сменить тему">🌙</button>
-    </div>
-    <div class="date-display" id="current-date"></div>
+        <div class="date-display" id="current-date"></div>
 
-    <!-- Прогресс-бар -->
-    <div class="progress-container">
-        <div class="progress-text">
-            <span>Прогресс дня:</span>
-            <span id="progress-count">0 / 0</span>
+        <!-- Прогресс -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>Прогресс дня:</span>
+                <span id="progress-count">0 / 0</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
         </div>
-        <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progress-fill"></div>
+
+        <!-- Ввод -->
+        <div class="input-group">
+            <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
+            <select id="task-category">
+                <option value="работа">💼 Работа</option>
+                <option value="учеба">📚 Учеба</option>
+                <option value="личное">🏠 Личное</option>
+            </select>
+            <button onclick="addTask()">+</button>
         </div>
+
+        <ul id="task-list"></ul>
+
+        <button class="clear-btn" onclick="clearCompleted()">Удалить выполненные</button>
     </div>
 
-   <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
-<select id="task-category" style="padding: 12px; border-radius: 8px; background-color: #2c2c2c; color: white; border: none; outline: none; cursor: pointer;">
-    <option value="работа">💼 Работа</option>
-    <option value="учеба">📚 Учеба</option>
-    <option value="личное">🏠 Личное</option>
-</select>
-<button onclick="addTask()">+</button>
+    <!-- Экран 2: Календарь (Пока пустой) -->
+    <div class="planner-container" id="tab-calendar">
+        <h2>Календарь</h2>
+        <p style="color: #888;">Здесь скоро появится сетка календаря...</p>
+    </div>
 
-    <ul id="task-list"></ul>
-
-    <button class="clear-btn" onclick="clearCompleted()">Удалить выполненные</button>
-</div>
-
-<script>
-    // 1. Приветствие и дата
-    const now = new Date();
-    const hours = now.getHours();
-    let greetingText = "Доброй ночи!";
-    if (hours >= 5 && hours < 12) greetingText = "Доброе утро!";
-    else if (hours >= 12 && hours < 18) greetingText = "Добрый день!";
-    else if (hours >= 18 && hours < 23) greetingText = "Добрый вечер!";
-
-    document.getElementById('greeting').innerText = greetingText;
-    document.getElementById('current-date').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-    // 2. Логика Темы
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const body = document.body;
-
-    // Проверяем, сохранена ли тема в памяти
-    if (localStorage.getItem('theme') === 'light') {
-        body.classList.add('light-theme');
-        themeToggleBtn.innerText = '☀️';
-    }
-
-    themeToggleBtn.addEventListener('click', () => {
-        body.classList.toggle('light-theme');
-        if (body.classList.contains('light-theme')) {
-            themeToggleBtn.innerText = '☀️';
-            localStorage.setItem('theme', 'light');
-        } else {
-            themeToggleBtn.innerText = '🌙';
-            localStorage.setItem('theme', 'dark');
-        }
-    });
-
-    // 3. Логика Задач
-    const taskInput = document.getElementById('task-input');
-    const taskList = document.getElementById('task-list');
-    let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
-
-    function renderTasks() {
-        taskList.innerHTML = '';
-        let completedCount = 0;
-
-        tasks.forEach((task, index) => {
-            if (task.completed) completedCount++;
-
-            const li = document.createElement('li');
-            if (task.completed) li.classList.add('completed');
-
-            const span = document.createElement('span');
-            span.className = 'task-text';
-            span.innerText = task.text;
-            span.onclick = () => toggleTask(index);
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.innerText = '×';
-            deleteBtn.onclick = () => deleteTask(index);
-
-            li.appendChild(span);
-            li.appendChild(deleteBtn);
-            taskList.appendChild(li);
-        });
-
-        updateProgress(completedCount, tasks.length);
-        localStorage.setItem('myTasks', JSON.stringify(tasks));
-    }
-
-    // 4. Обновление прогресс-бара
-    function updateProgress(completed, total) {
-        document.getElementById('progress-count').innerText = `${completed} / ${total}`;
-        const percentage = total === 0 ? 0 : (completed / total) * 100;
-        document.getElementById('progress-fill').style.width = `${percentage}%`;
-    }
-
-            function renderTasks() {
-        taskList.innerHTML = '';
-        tasks.forEach((task, index) => {
-            const li = document.createElement('li');
-            if (task.completed) li.classList.add('completed');
-
-            // 1. Цветная полоска категории
-            const colorBar = document.createElement('div');
-            colorBar.style.width = '5px';
-            colorBar.style.height = '100%';
-            colorBar.style.borderRadius = '5px';
-            colorBar.style.marginRight = '10px';
-
-            if (task.category === 'работа') colorBar.style.backgroundColor = '#bb86fc';
-            else if (task.category === 'учеба') colorBar.style.backgroundColor = '#03dac6';
-            else colorBar.style.backgroundColor = '#ffb74d';
-
-            li.appendChild(colorBar);
-
-            // 2. Текст задачи
-            const span = document.createElement('span');
-            span.className = 'task-text';
-            span.innerText = task.text;
-            span.onclick = () => toggleTask(index);
-
-            // 3. Кнопка удаления
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.innerText = '×';
-            deleteBtn.onclick = () => deleteTask(index);
-
-            // Собираем карточку
-            li.appendChild(span);
-            li.appendChild(deleteBtn);
-            taskList.appendChild(li);
-        });
-
-        // Сохраняем в память
-        localStorage.setItem('myTasks', JSON.stringify(tasks));
-
-        // Если у тебя есть функция обновления прогресса (счетчика), она должна быть здесь
-        // Например: updateProgress();
-    }
-    function toggleTask(index) {
-        tasks[index].completed = !tasks[index].completed;
-        renderTasks();
-    }
-
-    function deleteTask(index) {
-        tasks.splice(index, 1);
-        renderTasks();
-    }
-
-    // 5. Очистка выполненных
-    function clearCompleted() {
-        tasks = tasks.filter(task => !task.completed);
-        renderTasks();
-    }
-
-    renderTasks();
-</script>
-
+    <!-- Подключаем наш скрипт в самом конце! -->
+    <script src="script.js"></script>
 </body>
 </html>
