@@ -187,3 +187,46 @@ renderTasks(<!DOCTYPE html>
     <script src="script.js"></script>
 </body>
 </html>);
+
+// ЛОГИКА КАЛЕНДАРЯ
+function generateCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    const monthYearDisplay = document.getElementById('calendar-month-year');
+
+    if (!grid) return; // Защита, если элемент не найден
+
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+    monthYearDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
+
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    const dayNames = Array.from(grid.children).slice(0, 7);
+    grid.innerHTML = '';
+    dayNames.forEach(day => grid.appendChild(day));
+
+    let emptyCells = firstDay === 0 ? 6 : firstDay - 1;
+
+    for (let i = 0; i < emptyCells; i++) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'calendar-day empty';
+        grid.appendChild(emptyDiv);
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day';
+        dayDiv.innerText = i;
+        if (i === today.getDate()) {
+            dayDiv.classList.add('today');
+        }
+        grid.appendChild(dayDiv);
+    }
+}
+
+// Запускаем календарь при загрузке
+generateCalendar();
