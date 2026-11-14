@@ -2,131 +2,117 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Мой умный планер</title>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Подключаем Chart.js для графиков -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <div class="nav-menu">
-        <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">✨ Планер</button>
-        <button onclick="showTab('progress')" id="btn-progress" class="nav-btn">📊 Прогресс</button>
-        <button onclick="showTab('trackers')" id="btn-trackers" class="nav-btn">🌸 Трекеры</button>
-        <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">📅 Календарь</button>
-    </div>
-
-    <!-- ЭКРАН 1: ПЛАНЕР -->
-    <div class="planner-container" id="tab-tasks">
-        <h2 id="greeting">Привет!</h2>
-        <div class="date-display" id="current-date"></div>
-        <div class="time-scale-switcher">
-            <button onclick="changeScale('day', this)" class="scale-btn active">День</button>
-            <button onclick="changeScale('week', this)" class="scale-btn">Неделя</button>
-            <button onclick="changeScale('month', this)" class="scale-btn">Месяц</button>
-            <button onclick="changeScale('year', this)" class="scale-btn">Год</button>
+    <!-- Навигация -->
+    <nav class="nav-menu-wrapper">
+        <div class="nav-menu">
+            <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">✨ Планер</button>
+            <button onclick="showTab('progress')" id="btn-progress" class="nav-btn">📊 Прогресс</button>
+            <button onclick="showTab('trackers')" id="btn-trackers" class="nav-btn">🌸 Трекеры</button>
+            <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">📅 Календарь</button>
         </div>
+    </nav>
 
-        <div id="scale-day" class="scale-content" style="display: block;">
-            <div class="input-group">
-                <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
-                <select id="task-category">
-                    <option value="работа">💼 Работа</option>
-                    <option value="учеба">📚 Учеба</option>
-                    <option value="личное">🏠 Личное</option>
-                </select>
-                <button onclick="addTask()">+</button>
-            </div>
-            <ul id="task-list"></ul>
-            <button class="clear-btn" onclick="clearCompleted()">Удалить выполненные</button>
-        </div>
+    <main class="main-content">
+        <!-- ЭКРАН 1: ПЛАНЕР -->
+        <div class="planner-container" id="tab-tasks">
+            <h2 id="greeting">Привет!</h2>
+            <div class="date-display" id="current-date"></div>
 
-        <div id="scale-week" class="scale-content" style="display: none;">
-            <div class="week-grid">
-                <div class="week-day"><div class="week-day-header">Пн</div><div class="week-day-content" contenteditable="true"></div></div>
-                <div class="week-day"><div class="week-day-header">Вт</div><div class="week-day-content" contenteditable="true"></div></div>
-                <div class="week-day"><div class="week-day-header">Ср</div><div class="week-day-content" contenteditable="true"></div></div>
-                <div class="week-day"><div class="week-day-header">Чт</div><div class="week-day-content" contenteditable="true"></div></div>
-                <div class="week-day"><div class="week-day-header">Пт</div><div class="week-day-content" contenteditable="true"></div></div>
-                <div class="week-day"><div class="week-day-header" style="color: #D1A8B7;">Сб</div><div class="week-day-content" contenteditable="true"></div></div>
-                <div class="week-day"><div class="week-day-header" style="color: #D1A8B7;">Вс</div><div class="week-day-content" contenteditable="true"></div></div>
+            <div class="time-scale-switcher">
+                <button onclick="changeScale('day', this)" class="scale-btn active">День</button>
+                <button onclick="changeScale('week', this)" class="scale-btn">Неделя</button>
+                <button onclick="changeScale('month', this)" class="scale-btn">Месяц</button>
+                <button onclick="changeScale('year', this)" class="scale-btn">Год</button>
             </div>
-        </div>
 
-        <div id="scale-month" class="scale-content" style="display: none;">
-            <div class="month-grid">
-                <div class="month-day-header">Пн</div><div class="month-day-header">Вт</div><div class="month-day-header">Ср</div>
-                <div class="month-day-header">Чт</div><div class="month-day-header">Пт</div><div class="month-day-header">Сб</div><div class="month-day-header">Вс</div>
-                <script>for(let i=0; i<28; i++) document.write('<div class="month-cell" contenteditable="true"></div>');</script>
+            <div id="scale-day" class="scale-content" style="display: block;">
+                <div class="input-group">
+                    <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
+                    <select id="task-category">
+                        <option value="работа">💼 Работа</option>
+                        <option value="учеба">📚 Учеба</option>
+                        <option value="личное">🏠 Личное</option>
+                    </select>
+                    <button onclick="addTask()">+</button>
+                </div>
+                <ul id="task-list"></ul>
+                <button class="clear-btn" onclick="clearCompleted()">Удалить выполненные</button>
             </div>
-        </div>
 
-        <div id="scale-year" class="scale-content" style="display: none;">
-            <div class="year-grid">
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Январь</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Февраль</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Март</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Апрель</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Май</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Июнь</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Июль</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Август</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Сентябрь</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Октябрь</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Ноябрь</span></div>
-                <div class="year-month" contenteditable="true"><span class="year-month-title">Декабрь</span></div>
+            <div id="scale-week" class="scale-content" style="display: none;">
+                <div class="week-grid">
+                    <div class="week-day"><div class="week-day-header">Пн</div><div class="week-day-content" contenteditable="true"></div></div>
+                    <div class="week-day"><div class="week-day-header">Вт</div><div class="week-day-content" contenteditable="true"></div></div>
+                    <div class="week-day"><div class="week-day-header">Ср</div><div class="week-day-content" contenteditable="true"></div></div>
+                    <div class="week-day"><div class="week-day-header">Чт</div><div class="week-day-content" contenteditable="true"></div></div>
+                    <div class="week-day"><div class="week-day-header">Пт</div><div class="week-day-content" contenteditable="true"></div></div>
+                    <div class="week-day"><div class="week-day-header" style="color: #D1A8B7;">Сб</div><div class="week-day-content" contenteditable="true"></div></div>
+                    <div class="week-day"><div class="week-day-header" style="color: #D1A8B7;">Вс</div><div class="week-day-content" contenteditable="true"></div></div>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- ЭКРАН 2: ПРОГРЕСС С ДИАГРАММАМИ -->
-    <div class="planner-container" id="tab-progress" style="display: none;">
-        <h2 style="text-align: center;">📊 Статистика</h2>
-        <p style="color: #888; text-align: center; margin-bottom: 20px;">Твой прогресс в процентах</p>
+            <div id="scale-month" class="scale-content" style="display: none;">
+                <div class="month-grid">
+                    <div class="month-day-header">Пн</div><div class="month-day-header">Вт</div><div class="month-day-header">Ср</div>
+                    <div class="month-day-header">Чт</div><div class="month-day-header">Пт</div><div class="month-day-header">Сб</div><div class="month-day-header">Вс</div>
+                    <script>for(let i=0; i<28; i++) document.write('<div class="month-cell" contenteditable="true"></div>');</script>
+                </div>
+            </div>
 
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h4>День</h4>
-                <canvas id="chart-day"></canvas>
-            </div>
-            <div class="chart-card">
-                <h4>Неделя</h4>
-                <canvas id="chart-week"></canvas>
-            </div>
-            <div class="chart-card">
-                <h4>Месяц</h4>
-                <canvas id="chart-month"></canvas>
-            </div>
-            <div class="chart-card">
-                <h4>Год</h4>
-                <canvas id="chart-year"></canvas>
+            <div id="scale-year" class="scale-content" style="display: none;">
+                <div class="year-grid">
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Январь</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Февраль</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Март</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Апрель</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Май</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Июнь</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Июль</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Август</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Сентябрь</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Октябрь</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Ноябрь</span></div>
+                    <div class="year-month" contenteditable="true"><span class="year-month-title">Декабрь</span></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- ЭКРАН 3: ТРЕКЕРЫ -->
-    <div class="planner-container" id="tab-trackers" style="display: none; max-width: 800px;">
-        <h2 style="text-align: center; margin-bottom: 20px;">🌸 Мои Трекеры</h2>
-
-        <!-- Форма добавления нового трекера -->
-        <div class="add-tracker-form">
-            <input type="text" id="new-tracker-name" placeholder="Название (напр. Чтение)">
-            <input type="number" id="new-tracker-goal" placeholder="Цель (напр. 30)" min="1">
-            <button onclick="createTracker()">Создать</button>
+        <!-- ЭКРАН 2: ПРОГРЕСС -->
+        <div class="planner-container" id="tab-progress" style="display: none;">
+            <h2 style="text-align: center;">📊 Статистика</h2>
+            <div class="charts-grid">
+                <div class="chart-card"><h4>День</h4><canvas id="chart-day"></canvas></div>
+                <div class="chart-card"><h4>Неделя</h4><canvas id="chart-week"></canvas></div>
+                <div class="chart-card"><h4>Месяц</h4><canvas id="chart-month"></canvas></div>
+                <div class="chart-card"><h4>Год</h4><canvas id="chart-year"></canvas></div>
+            </div>
         </div>
 
-        <div class="trackers-grid" id="custom-trackers-container">
-            <!-- Сюда скрипт будет добавлять трекеры -->
+        <!-- ЭКРАН 3: ТРЕКЕРЫ -->
+        <div class="planner-container" id="tab-trackers" style="display: none;">
+            <h2 style="text-align: center; margin-bottom: 20px;">🌸 Мои Трекеры</h2>
+            <div class="add-tracker-form">
+                <input type="text" id="new-tracker-name" placeholder="Название">
+                <input type="number" id="new-tracker-goal" placeholder="Цель" min="1">
+                <button onclick="createTracker()">Создать</button>
+            </div>
+            <div class="trackers-grid" id="custom-trackers-container"></div>
         </div>
-    </div>
 
-    <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
-    <div class="planner-container" id="tab-calendar" style="display: none; max-width: 1000px;">
-        <h2 style="text-align: center; margin-bottom: 30px;">📅 Календарь</h2>
-        <div class="year-grid" id="full-year-calendar"></div>
-    </div>
+        <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
+        <div class="planner-container" id="tab-calendar" style="display: none; max-width: 100%;">
+            <h2 style="text-align: center; margin-bottom: 30px;">📅 Календарь</h2>
+            <div class="year-grid" id="full-year-calendar"></div>
+        </div>
+    </main>
 
     <script src="script.js"></script>
 </body>

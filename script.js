@@ -2,9 +2,6 @@
 const now = new Date();
 let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
 let trackers = JSON.parse(localStorage.getItem('myTrackers')) || [];
-let timerInterval;
-let timeLeft = 25 * 60;
-let isRunning = false;
 
 document.getElementById('greeting').innerText = now.getHours() < 12 ? "Доброе утро!" : (now.getHours() < 18 ? "Добрый день!" : "Добрый вечер!");
 document.getElementById('current-date').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -71,7 +68,7 @@ function addTask() {
 taskInput.addEventListener('keypress', e => { if (e.key === 'Enter') addTask(); });
 
 // --- 4. ДИАГРАММЫ ПРОГРЕССА ---
-let charts = {}; // Храним графики, чтобы обновлять их
+let charts = {};
 
 function renderCharts() {
     const total = tasks.length;
@@ -79,37 +76,23 @@ function renderCharts() {
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
     const chartConfig = (id, label, color) => {
-        if (charts[id]) charts[id].destroy(); // Удаляем старый график перед созданием нового
+        if (charts[id]) charts[id].destroy();
         const ctx = document.getElementById(id).getContext('2d');
         charts[id] = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Выполнено', 'Осталось'],
-                datasets: [{
-                    data: [percent, 100 - percent],
-                    backgroundColor: [color, '#EAE6F0'],
-                    borderWidth: 0,
-                    cutout: '75%'
-                }]
+                datasets: [{ data: [percent, 100 - percent], backgroundColor: [color, '#EAE6F0'], borderWidth: 0, cutout: '75%' }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
-                },
-                animation: { animateScale: true }
-            }
+            options: { responsive: true, plugins: { legend: { display: false }, tooltip: { enabled: false } }, animation: { animateScale: true } }
         });
     };
 
-    // Для примера, все графики показывают общий прогресс задач
     chartConfig('chart-day', 'День', '#A38FBC');
     chartConfig('chart-week', 'Неделя', '#8ECAE6');
     chartConfig('chart-month', 'Месяц', '#FFB74D');
     chartConfig('chart-year', 'Год', '#D1A8B7');
 
-    // Добавляем текст в центр круга
     setTimeout(() => {
         document.querySelectorAll('.chart-card').forEach(card => {
             if(!card.querySelector('.percent-text')) {
@@ -117,7 +100,6 @@ function renderCharts() {
                 txt.className = 'percent-text';
                 txt.style.cssText = 'position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:20px; font-weight:bold; color:var(--primary); pointer-events:none;';
                 txt.innerText = percent + '%';
-                card.style.position = 'relative';
                 card.appendChild(txt);
             } else {
                 card.querySelector('.percent-text').innerText = percent + '%';
@@ -132,7 +114,7 @@ function renderTrackers() {
     container.innerHTML = '';
 
     if (trackers.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#888; width:100%;">У тебя пока нет трекеров. Создай первый!</p>';
+        container.innerHTML = '<p style="text-align:center; color:#888; width:100%;">У тебя пока нет трекеров.</p>';
         return;
     }
 
@@ -147,7 +129,7 @@ function renderTrackers() {
                 <button onclick="updateTracker(${index}, -1)">-</button>
                 <button onclick="updateTracker(${index}, 1)">+</button>
             </div>
-            <button class="delete-tracker" onclick="deleteTracker(${index})">Удалить</button>
+            <button class="delete-tracker" style="background:none; border:none; color:#D1A8B7; cursor:pointer; margin-top:10px; font-size:12px;" onclick="deleteTracker(${index})">Удалить</button>
         `;
         container.appendChild(card);
     });

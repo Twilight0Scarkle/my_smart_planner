@@ -1,463 +1,173 @@
-/* --- НАСТРОЙКА ЦВЕТОВ (Лаванда + Мята) --- */
+/* --- ПЕРЕМЕННЫЕ И БАЗА --- */
 :root {
-    --bg-color: #F7F5FA; /* Очень светлый лавандовый фон */
-    --card-bg: #FFFFFF; /* Белые карточки */
-    --text-main: #4A4A4A; /* Темно-серый текст */
-    --text-muted: #9E9E9E; /* Серый для дат */
-
-    --primary: #A38FBC; /* Лавандовый (основной) */
-    --primary-hover: #8E77A8; /* Лавандовый темнее */
-    --accent: #8ECAE6; /* Свежий мятно-голубой (для деталей) */
-
+    --bg-color: #F7F5FA;
+    --card-bg: #FFFFFF;
+    --text-main: #4A4A4A;
+    --text-muted: #9E9E9E;
+    --primary: #A38FBC;
+    --primary-hover: #8E77A8;
+    --accent: #8ECAE6;
     --border-color: #EAE6F0;
 }
 
-/* --- БАЗА --- */
+* { box-sizing: border-box; }
+
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
     min-height: 100vh;
-    margin: 0;
-    padding-top: 80px;
 }
 
-h2 {
-    font-family: 'Comfortaa', cursive;
-    color: var(--primary);
-    margin-top: 0;
-    font-size: 26px;
-}
+h2 { font-family: 'Comfortaa', cursive; color: var(--primary); margin-top: 0; font-size: 26px; }
 
-/* --- МЕНЮ (ВКЛАДКИ) --- */
-.nav-menu {
-    position: absolute;
-    top: 20px;
+/* --- НАВИГАЦИЯ --- */
+.nav-menu-wrapper {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-color);
+    padding: 20px 10px;
     display: flex;
-    gap: 10px;
-    background: var(--card-bg);
-    padding: 8px;
-    border-radius: 30px;
-    box-shadow: 0 4px 20px rgba(163, 143, 188, 0.15); /* Лавандовая тень */
+    justify-content: center;
+    z-index: 100;
 }
+
+.nav-menu {
+    display: flex;
+    gap: 5px;
+    background: var(--card-bg);
+    padding: 6px;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(163, 143, 188, 0.15);
+    overflow-x: auto; /* На телефоне можно будет скроллить меню */
+    max-width: 100%;
+}
+
 .nav-btn {
     background-color: transparent;
     color: var(--text-muted);
     border: none;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
     transition: 0.3s;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
+    white-space: nowrap;
 }
-.nav-btn:hover { color: var(--primary); background-color: var(--bg-color); }
-.nav-btn.active {
-    background-color: var(--primary);
-    color: white;
-    box-shadow: 0 4px 15px rgba(163, 143, 188, 0.4);
+.nav-btn:hover { color: var(--primary); }
+.nav-btn.active { background-color: var(--primary); color: white; box-shadow: 0 4px 15px rgba(163, 143, 188, 0.4); }
+
+/* --- ОСНОВНОЙ КОНТЕНТ --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
 }
 
-/* --- КАРТОЧКИ --- */
 .planner-container {
     background-color: var(--card-bg);
-    padding: 35px;
+    padding: 30px;
     border-radius: 24px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); /* Очень мягкая тень */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
     width: 100%;
-    max-width: 500px;
-    box-sizing: border-box;
+    max-width: 700px; /* Ограничение для ПК */
     border: 1px solid var(--border-color);
 }
 
-.date-display { font-size: 14px; color: var(--text-muted); margin-bottom: 25px; font-weight: 500;}
-
-/* --- ВВОД --- */
+/* --- ЭЛЕМЕНТЫ ФОРМЫ И ЗАДАЧ --- */
+.date-display { font-size: 14px; color: var(--text-muted); margin-bottom: 25px; }
 .input-group { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-input[type="text"] {
-    flex: 1; padding: 15px; border: 2px solid var(--border-color);
-    border-radius: 16px; background-color: var(--bg-color); color: var(--text-main);
-    font-size: 15px; outline: none; font-family: 'Montserrat', sans-serif;
-    transition: 0.3s;
+input[type="text"], select {
+    padding: 15px; border: 2px solid var(--border-color); border-radius: 16px;
+    background-color: var(--bg-color); color: var(--text-main); font-size: 15px; outline: none; flex: 1; min-width: 150px;
 }
-input[type="text"]:focus { border-color: var(--primary); background-color: #FFF; box-shadow: 0 0 0 3px rgba(163, 143, 188, 0.1);}
+input[type="text"]:focus { border-color: var(--primary); background-color: #FFF; }
+button { padding: 15px 25px; border: none; border-radius: 16px; background-color: var(--primary); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+button:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
 
-select {
-    padding: 15px; border-radius: 16px; background-color: var(--bg-color);
-    color: var(--text-main); border: 2px solid var(--border-color); outline: none; cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-}
-
-button {
-    padding: 15px 25px; border: none; border-radius: 16px;
-    background-color: var(--primary); color: white; font-weight: bold;
-    font-size: 16px; cursor: pointer; transition: 0.3s;
-}
-button:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(163, 143, 188, 0.3);}
-
-/* --- СПИСОК ЗАДАЧ --- */
 ul { list-style-type: none; padding: 0; margin: 0; }
-li {
-    background-color: var(--bg-color); padding: 18px 20px; margin-bottom: 12px;
-    border-radius: 16px; display: flex; justify-content: space-between;
-    align-items: center; overflow: hidden; position: relative;
-    border: 1px solid transparent; transition: 0.3s;
-}
-li:hover { border-color: var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.03); transform: translateX(4px); }
-
-.delete-btn {
-    background: none; color: #D1A8B7; font-size: 24px;
-    padding: 0; cursor: pointer; box-shadow: none;
-}
-.delete-btn:hover { color: #E87A90; background: none; transform: none; box-shadow: none;}
+li { background-color: var(--bg-color); padding: 18px 20px; margin-bottom: 12px; border-radius: 16px; display: flex; align-items: center; position: relative; border: 1px solid transparent; transition: 0.3s; }
+li:hover { border-color: var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+.delete-btn { background: none; color: #D1A8B7; font-size: 24px; padding: 0; cursor: pointer; box-shadow: none; margin-left: auto; }
 .completed span { text-decoration: line-through; color: var(--text-muted); }
-.completed { opacity: 0.6; background-color: #F0F0F0; }
 .task-text { cursor: pointer; flex: 1; margin-left: 15px; font-weight: 500; z-index: 2; }
 
-/* --- ПРОГРЕСС --- */
-.progress-container { margin-bottom: 25px; }
-.progress-text { font-size: 14px; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600;}
-.progress-bar-bg { background-color: var(--bg-color); height: 12px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);}
-.progress-bar-fill { background-color: var(--accent); height: 100%; width: 0%; transition: width 0.4s ease; border-radius: 6px;}
-.clear-btn {
-    width: 100%; margin-top: 20px; background-color: transparent;
-    border: 2px solid var(--border-color); color: var(--text-muted); box-shadow: none;
-}
-.clear-btn:hover { background-color: #FFF0F5; border-color: #E6A8B7; color: #D16980; transform: translateY(-2px); box-shadow: none;}
-
-/* --- КАЛЕНДАРЬ --- */
-#tab-calendar { display: none; max-width: 800px; }
-.calendar-day {
-    background-color: var(--bg-color);
-    border: 2px solid transparent;
-    padding: 15px 5px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-    font-weight: bold;
-    min-height: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-.calendar-day:hover {
-    background-color: #FFFFFF;
-    border-color: var(--primary);
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(163, 143, 188, 0.15);
-}
-.calendar-day.empty { background-color: transparent; border: none; cursor: default; box-shadow: none; transform: none;}
-.calendar-day.today {
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    box-shadow: 0 5px 15px rgba(142, 202, 230, 0.4);
-}
-/* --- СТИЛИ ДЛЯ ТРЕКЕРОВ --- */
-.tracker-card {
-    background-color: var(--card-bg);
-    padding: 25px;
-    border-radius: 20px;
-    border: 2px solid var(--border-color);
-    box-shadow: 0 8px 25px rgba(163, 143, 188, 0.08);
-    text-align: center;
-    transition: 0.3s;
-}
-
-.tracker-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(142, 202, 230, 0.15);
-}
-
-.tracker-card h3 {
-    margin-top: 0;
-    color: var(--primary);
-    font-family: 'Comfortaa', cursive;
-    font-size: 20px;
-}
-
-.tracker-card p {
-    font-size: 16px;
-    margin-bottom: 20px;
-    font-weight: 500;
-}
-
-.tracker-btn {
-    width: 100%;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.tracker-btn:hover {
-    background-color: var(--primary-hover);
-    box-shadow: 0 5px 15px rgba(163, 143, 188, 0.3);
-}
-/* --- СМАЙЛИКИ НАСТРОЕНИЯ --- */
-.mood-emoji {
-    font-size: 32px;
-    cursor: pointer;
-    transition: 0.2s;
-    filter: grayscale(100%); /* Сначала они серые */
-    opacity: 0.6;
-}
-.mood-emoji:hover {
-    transform: scale(1.2);
-    filter: grayscale(0%);
-    opacity: 1;
-}
-.mood-emoji.active {
-    filter: grayscale(0%);
-    opacity: 1;
-    transform: scale(1.2);
-    text-shadow: 0 0 10px rgba(163, 143, 188, 0.5);
-}
-
 /* --- ПЕРЕКЛЮЧАТЕЛЬ МАСШТАБА --- */
-.time-scale-switcher {
-    display: flex;
-    background-color: var(--bg-color);
-    padding: 5px;
-    border-radius: 20px;
-    margin-bottom: 25px;
-    border: 1px solid var(--border-color);
-}
+.time-scale-switcher { display: flex; background-color: var(--bg-color); padding: 5px; border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--border-color); }
+.scale-btn { flex: 1; background: transparent; color: var(--text-muted); border: none; padding: 10px; border-radius: 15px; cursor: pointer; font-weight: 600; box-shadow: none; }
+.scale-btn.active { background-color: white; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
-.scale-btn {
-    flex: 1;
-    background: transparent;
-    color: var(--text-muted);
-    border: none;
-    padding: 10px;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: 0.3s;
-    box-shadow: none;
-}
+/* --- СЕТКИ (НЕДЕЛЯ, МЕСЯЦ, ГОД) --- */
+.week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+.week-day { background-color: var(--bg-color); border-radius: 12px; min-width: 100px; display: flex; flex-direction: column; border: 2px solid var(--border-color); }
+.week-day-header { text-align: center; padding: 10px; font-weight: bold; color: var(--primary); border-bottom: 2px solid var(--border-color); }
+.week-day-content { padding: 10px; min-height: 150px; font-size: 14px; outline: none; }
 
-.scale-btn:hover {
-    color: var(--primary);
-    background: transparent;
-    box-shadow: none;
-}
+.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.month-day-header { text-align: center; font-weight: bold; color: var(--primary); padding-bottom: 10px; font-size: 14px; }
+.month-cell { background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; min-height: 80px; padding: 5px; outline: none; }
 
-.scale-btn.active {
-    background-color: white;
-    color: var(--primary);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-/* --- СЕТКА НА НЕДЕЛЮ --- */
-.week-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    overflow-x: auto; /* Если не влезет на телефоне, будет скролл */
-    padding-bottom: 10px;
-}
+.year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+.year-month { background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 12px; padding: 15px; min-height: 120px; outline: none; font-size: 13px; }
+.year-month-title { display: block; font-weight: bold; color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid var(--border-color); }
 
-.week-day {
-    background-color: var(--bg-color);
-    border-radius: 12px;
-    min-width: 100px;
-    display: flex;
-    flex-direction: column;
-    border: 2px solid var(--border-color);
-    transition: 0.3s;
-}
+/* --- ГРАФИКИ И ТРЕКЕРЫ --- */
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+.chart-card { background-color: var(--bg-color); padding: 15px; border-radius: 16px; text-align: center; position: relative; }
 
-.week-day:hover {
-    border-color: var(--primary);
-}
-
-.week-day-header {
-    text-align: center;
-    padding: 10px;
-    font-weight: bold;
-    color: var(--primary);
-    border-bottom: 2px solid var(--border-color);
-    font-family: 'Comfortaa', cursive;
-}
-
-.week-day-content {
-    padding: 10px;
-    min-height: 150px;
-    font-size: 14px;
-    outline: none;
-    color: var(--text-main);
-    line-height: 1.5;
-}
-
-.week-day-content:empty:before {
-    content: "Что делаем?";
-    color: #ccc;
-    pointer-events: none;
-}
-
-/* --- СЕТКА НА МЕСЯЦ --- */
-.month-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-}
-
-.month-day-header {
-    text-align: center;
-    font-weight: bold;
-    color: var(--primary);
-    padding-bottom: 10px;
-    font-size: 14px;
-}
-
-.month-cell {
-    background-color: var(--bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    min-height: 80px;
-    padding: 5px;
-    font-size: 12px;
-    outline: none;
-    transition: 0.2s;
-}
-
-.month-cell:hover {
-    background-color: white;
-    border-color: var(--primary);
-    box-shadow: 0 2px 8px rgba(163, 143, 188, 0.1);
-}
-
-/* --- СЕТКА НА ГОД --- */
-.year-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-}
-
-.year-month {
-    background-color: var(--bg-color);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 15px;
-    min-height: 120px;
-    outline: none;
-    font-size: 13px;
-    transition: 0.3s;
-}
-
-.year-month:hover {
-    border-color: var(--primary);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(163, 143, 188, 0.1);
-}
-
-.year-month-title {
-    display: block;
-    font-weight: bold;
-    color: var(--primary);
-    font-family: 'Comfortaa', cursive;
-    margin-bottom: 10px;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 5px;
-}
-/* --- БЛОКИ ПРОГРЕССА --- */
-.progress-block {
-    margin-bottom: 20px;
-    background-color: var(--bg-color);
-    padding: 15px;
-    border-radius: 12px;
-}
-.progress-block .progress-text { margin-bottom: 10px; }
-
-/* --- ТРЕКЕРЫ --- */
-.tracker-card {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    text-align: center;
-}
-.tracker-card h3 { color: var(--primary); font-family: 'Comfortaa', cursive; margin-top: 0; }
-.tracker-btn {
-    width: 100%; background-color: var(--primary); color: white;
-    border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 10px;
-}
+.trackers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+.custom-tracker-card { background-color: var(--bg-color); padding: 20px; border-radius: 16px; text-align: center; }
+.tracker-controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+.tracker-controls button { width: 40px; height: 40px; border-radius: 50%; }
 
 /* --- КАЛЕНДАРЬ НА ГОД --- */
-.year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-.month-card {
-    background-color: var(--bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 15px;
-}
-.month-card h4 { text-align: center; color: var(--primary); margin: 0 0 10px 0; font-family: 'Comfortaa', cursive;}
-.month-days-grid {
-    display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center;
-}
-.month-days-grid div { padding: 4px; font-size: 12px; border-radius: 4px; cursor: pointer; }
-.month-days-grid div:hover { background-color: white; border: 1px solid var(--primary); }
-.month-days-grid .empty { background: none; cursor: default; }
+.month-card { background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
+.month-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.month-days-grid div { padding: 4px; font-size: 12px; border-radius: 4px; }
 .month-days-grid .today { background-color: var(--accent); color: white; font-weight: bold; }
 
-/* --- ГРАФИКИ --- */
-.charts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-}
-.chart-card {
-    background-color: var(--bg-color);
-    padding: 15px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    text-align: center;
-}
-.chart-card h4 { margin: 0 0 10px 0; color: var(--primary); font-family: 'Comfortaa', cursive; }
+/* ========================================= */
+/* 📱 АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ И ПЛАНШЕТОВ */
+/* ========================================= */
 
-/* --- КАСТОМНЫЕ ТРЕКЕРЫ --- */
-.add-tracker-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-    background: var(--bg-color);
-    padding: 15px;
-    border-radius: 16px;
-}
-.add-tracker-form input {
-    padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); outline: none; flex: 1;
-}
-.add-tracker-form button {
-    padding: 10px 20px; border-radius: 10px; background: var(--primary); color: white; border: none; cursor: pointer;
+/* Планшеты и небольшие ноутбуки */
+@media (max-width: 900px) {
+    .planner-container { max-width: 95%; padding: 20px; }
+    .week-grid { grid-template-columns: repeat(4, 1fr); } /* Сетка недели переносится */
+    .week-day:nth-child(n+5) { display: none; } /* Скрываем выходные на планшете (опционально, чтобы не ломалось) */
 }
 
-.trackers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
+/* Телефоны */
+@media (max-width: 600px) {
+    .nav-menu-wrapper { padding: 10px 5px; }
+    .nav-btn { padding: 8px 12px; font-size: 12px; }
+
+    .planner-container { padding: 15px; border-radius: 16px; }
+
+    .input-group { flex-direction: column; }
+    .input-group input, .input-group select, .input-group button { width: 100%; }
+
+    /* Переключатели масштаба в столбик */
+    .time-scale-switcher { flex-wrap: wrap; }
+    .scale-btn { flex: 1 1 40%; margin-bottom: 5px; }
+
+    /* Сетка недели в одну колонку (или скролл) */
+    .week-grid { display: flex; overflow-x: auto; gap: 10px; }
+    .week-day { min-width: 120px; }
+    .week-day:nth-child(n+5) { display: flex; } /* Возвращаем выходные на телефоне, будем скроллить */
+
+    /* Сетка месяца уменьшает ячейки */
+    .month-cell { min-height: 50px; font-size: 10px; }
+    .month-day-header { font-size: 10px; }
+
+    .charts-grid { grid-template-columns: 1fr 1fr; } /* 2 графика в ряд */
+
+    .add-tracker-form { flex-direction: column; }
+    .add-tracker-form input, .add-tracker-form button { width: 100%; }
 }
-.custom-tracker-card {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 16px;
-    border: 2px solid var(--border-color);
-    text-align: center;
-    transition: 0.3s;
-}
-.custom-tracker-card:hover { border-color: var(--primary); transform: translateY(-3px); }
-.custom-tracker-card h3 { color: var(--text-main); font-family: 'Comfortaa', cursive; margin-top: 0; font-size: 18px; }
-.custom-tracker-card .progress-text { font-weight: bold; margin-bottom: 15px; color: var(--primary); }
-.tracker-controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px;}
-.tracker-controls button { width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--bg-color); color: var(--text-main); font-size: 18px; cursor: pointer; transition: 0.2s;}
-.tracker-controls button:hover { background: var(--primary); color: white; }
-.delete-tracker { background: none; border: none; color: #D1A8B7; cursor: pointer; font-size: 12px; margin-top: 10px; }
