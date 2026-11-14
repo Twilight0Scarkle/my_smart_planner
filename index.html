@@ -61,21 +61,112 @@
             <button class="clear-btn" onclick="clearCompleted()">Удалить выполненные</button>
         </div>
 
-        <!-- БЛОК: НЕДЕЛЯ (Заглушка) -->
+                <!-- БЛОК: НЕДЕЛЯ -->
         <div id="scale-week" class="scale-content" style="display: none;">
-            <p style="text-align: center; color: #888; padding: 20px;">Сетка на неделю скоро появится...</p>
+            <div class="week-grid">
+                <!-- Понедельник -->
+                <div class="week-day">
+                    <div class="week-day-header">Пн</div>
+                    <div class="week-day-content" contenteditable="true">Нажми, чтобы писать...</div>
+                </div>
+                <!-- Вторник -->
+                <div class="week-day">
+                    <div class="week-day-header">Вт</div>
+                    <div class="week-day-content" contenteditable="true"></div>
+                </div>
+                <!-- Среда -->
+                <div class="week-day">
+                    <div class="week-day-header">Ср</div>
+                    <div class="week-day-content" contenteditable="true"></div>
+                </div>
+                <!-- Четверг -->
+                <div class="week-day">
+                    <div class="week-day-header">Чт</div>
+                    <div class="week-day-content" contenteditable="true"></div>
+                </div>
+                <!-- Пятница -->
+                <div class="week-day">
+                    <div class="week-day-header">Пт</div>
+                    <div class="week-day-content" contenteditable="true"></div>
+                </div>
+                <!-- Суббота -->
+                <div class="week-day">
+                    <div class="week-day-header" style="color: #D1A8B7;">Сб</div>
+                    <div class="week-day-content" contenteditable="true"></div>
+                </div>
+                <!-- Воскресенье -->
+                <div class="week-day">
+                    <div class="week-day-header" style="color: #D1A8B7;">Вс</div>
+                    <div class="week-day-content" contenteditable="true"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- БЛОК: МЕСЯЦ (Заглушка) -->
+               <!-- БЛОК: МЕСЯЦ -->
         <div id="scale-month" class="scale-content" style="display: none;">
-            <p style="text-align: center; color: #888; padding: 20px;">План на месяц скоро появится...</p>
+            <div class="month-grid">
+                <!-- Дни недели -->
+                <div class="month-day-header">Пн</div>
+                <div class="month-day-header">Вт</div>
+                <div class="month-day-header">Ср</div>
+                <div class="month-day-header">Чт</div>
+                <div class="month-day-header">Пт</div>
+                <div class="month-day-header">Сб</div>
+                <div class="month-day-header">Вс</div>
+
+                <!-- 4 недели по 7 дней (для простоты и эстетики) -->
+                <!-- Неделя 1 -->
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <!-- Неделя 2 -->
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <!-- Неделя 3 -->
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <!-- Неделя 4 -->
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-cell" contenteditable="true"></div>
+            </div>
         </div>
 
-        <!-- БЛОК: ГОД (Заглушка) -->
+               <!-- БЛОК: ГОД -->
         <div id="scale-year" class="scale-content" style="display: none;">
-            <p style="text-align: center; color: #888; padding: 20px;">Обзор на год скоро появится...</p>
+            <div class="year-grid">
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Январь</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Февраль</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Март</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Апрель</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Май</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Июнь</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Июль</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Август</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Сентябрь</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Октябрь</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Ноябрь</span></div>
+                <div class="year-month" contenteditable="true"><span class="year-month-title">Декабрь</span></div>
+            </div>
         </div>
-    </div>
 
     <!-- ЭКРАН 2: КАЛЕНДАРЬ -->
     <div class="planner-container" id="tab-calendar" style="display: none; max-width: 800px;">

@@ -258,3 +258,115 @@ li:hover { border-color: var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,
     color: var(--primary);
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
+/* --- СЕТКА НА НЕДЕЛЮ --- */
+.week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    overflow-x: auto; /* Если не влезет на телефоне, будет скролл */
+    padding-bottom: 10px;
+}
+
+.week-day {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--border-color);
+    transition: 0.3s;
+}
+
+.week-day:hover {
+    border-color: var(--primary);
+}
+
+.week-day-header {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: var(--primary);
+    border-bottom: 2px solid var(--border-color);
+    font-family: 'Comfortaa', cursive;
+}
+
+.week-day-content {
+    padding: 10px;
+    min-height: 150px;
+    font-size: 14px;
+    outline: none;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+.week-day-content:empty:before {
+    content: "Что делаем?";
+    color: #ccc;
+    pointer-events: none;
+}
+
+/* --- СЕТКА НА МЕСЯЦ --- */
+.month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.month-day-header {
+    text-align: center;
+    font-weight: bold;
+    color: var(--primary);
+    padding-bottom: 10px;
+    font-size: 14px;
+}
+
+.month-cell {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    min-height: 80px;
+    padding: 5px;
+    font-size: 12px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.month-cell:hover {
+    background-color: white;
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(163, 143, 188, 0.1);
+}
+
+/* --- СЕТКА НА ГОД --- */
+.year-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.year-month {
+    background-color: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    min-height: 120px;
+    outline: none;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.year-month:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(163, 143, 188, 0.1);
+}
+
+.year-month-title {
+    display: block;
+    font-weight: bold;
+    color: var(--primary);
+    font-family: 'Comfortaa', cursive;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 5px;
+}
