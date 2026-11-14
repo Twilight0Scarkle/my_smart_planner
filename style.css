@@ -203,3 +203,22 @@ li:hover { border-color: var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,
     background-color: var(--primary-hover);
     box-shadow: 0 5px 15px rgba(163, 143, 188, 0.3);
 }
+/* --- СМАЙЛИКИ НАСТРОЕНИЯ --- */
+.mood-emoji {
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.2s;
+    filter: grayscale(100%); /* Сначала они серые */
+    opacity: 0.6;
+}
+.mood-emoji:hover {
+    transform: scale(1.2);
+    filter: grayscale(0%);
+    opacity: 1;
+}
+.mood-emoji.active {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: scale(1.2);
+    text-shadow: 0 0 10px rgba(163, 143, 188, 0.5);
+}

@@ -108,6 +108,28 @@
             </div>
 
         </div>
+                    <!-- ПОМОДОРО -->
+            <div class="tracker-card">
+                <h3>⏳ Помодоро</h3>
+                <p>Время: <span id="timer-display" style="font-size: 24px; font-weight: bold; color: #A38FBC;">25:00</span></p>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="startTimer()" id="timer-btn" class="tracker-btn">Старт</button>
+                    <button onclick="resetTimer()" class="tracker-btn" style="background-color: #EAE6F0; color: #4A4A4A;">Сброс</button>
+                </div>
+            </div>
+
+            <!-- НАСТРОЕНИЕ -->
+            <div class="tracker-card">
+                <h3>🎭 Настроение дня</h3>
+                <p>Как ты себя чувствуешь?</p>
+                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+                    <span onclick="setMood('😊', this)" class="mood-emoji">😊</span>
+                    <span onclick="setMood('😐', this)" class="mood-emoji">😐</span>
+                    <span onclick="setMood('😔', this)" class="mood-emoji">😔</span>
+                    <span onclick="setMood('🔥', this)" class="mood-emoji">🔥</span>
+                </div>
+                <p style="margin-top: 15px; font-size: 14px; color: #888;">Твое настроение: <span id="mood-display">не выбрано</span></p>
+            </div>
     </div>
     <!-- Подключаем наш скрипт в самом конце! -->
     <script src="script.js"></script>
