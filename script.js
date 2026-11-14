@@ -310,3 +310,22 @@ renderTasks();
 generateCalendar();
 updateTrackersUI();
 updateTimerDisplay();
+
+// ==========================================
+// 10. ПЕРЕКЛЮЧЕНИЕ МАСШТАБА ВРЕМЕНИ
+// ==========================================
+function changeScale(scale, btnElement) {
+    // 1. Скрываем все блоки масштабов
+    document.getElementById('scale-day').style.display = 'none';
+    document.getElementById('scale-week').style.display = 'none';
+    document.getElementById('scale-month').style.display = 'none';
+    document.getElementById('scale-year').style.display = 'none';
+
+    // 2. Убираем класс active со всех кнопок переключателя
+    const buttons = document.querySelectorAll('.scale-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    // 3. Показываем нужный блок и делаем кнопку активной
+    document.getElementById('scale-' + scale).style.display = 'block';
+    if(btnElement) btnElement.classList.add('active');
+}
