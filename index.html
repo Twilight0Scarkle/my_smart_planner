@@ -13,10 +13,12 @@
 </head>
 <body>
 
-    <!-- Меню навигации -->
+        <!-- Меню навигации -->
     <div class="nav-menu">
-        <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">📝 Мои задачи</button>
-        <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">📅 Календарь</button>
+        <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">✨ Мои задачи</button>
+        <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">🌿 Календарь</button>
+        <!-- НОВАЯ ВКЛАДКА -->
+        <button onclick="showTab('trackers')" id="btn-trackers" class="nav-btn">🌸 Трекеры</button>
     </div>
 
     <!-- Экран 1: Задачи -->
@@ -75,7 +77,38 @@
             <!-- Сюда JavaScript вставит сами дни -->
         </div>
     </div>
+    <!-- Экран 3: Трекеры -->
+    <div class="planner-container" id="tab-trackers" style="display: none; max-width: 800px;">
+        <h2 style="text-align: center; margin-bottom: 30px;">Мои Трекеры</h2>
 
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+
+            <!-- ВОДА -->
+            <div class="tracker-card">
+                <h3>💧 Вода</h3>
+                <p>Выпито стаканов: <span id="water-count">0</span> / 8</p>
+                <button onclick="addWater()" class="tracker-btn">+ Выпить стакан</button>
+            </div>
+
+            <!-- СПОРТ -->
+            <div class="tracker-card">
+                <h3>🏃‍♀️ Спорт</h3>
+                <p>Тренировка сегодня: <span id="sport-status">Нет ❌</span></p>
+                <button onclick="toggleSport()" class="tracker-btn">Отметить тренировку</button>
+            </div>
+
+            <!-- СОН -->
+            <div class="tracker-card">
+                <h3>🌙 Сон</h3>
+                <p>Часов сна: <span id="sleep-count">0</span></p>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="addSleep()" class="tracker-btn" style="flex: 1;">+1 час</button>
+                    <button onclick="resetSleep()" class="tracker-btn" style="flex: 1; background-color: #EAE6F0; color: #4A4A4A;">Сброс</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <!-- Подключаем наш скрипт в самом конце! -->
     <script src="script.js"></script>
 </body>

@@ -11,28 +11,83 @@ document.getElementById('current-date').innerText = now.toLocaleDateString('ru-R
 
 // 2. ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
 function showTab(tabName) {
+    // Скрываем все экраны
     document.getElementById('tab-tasks').style.display = 'none';
     document.getElementById('tab-calendar').style.display = 'none';
+    document.getElementById('tab-trackers').style.display = 'none';
+
+    // Убираем активный класс со всех кнопок
     document.getElementById('btn-tasks').classList.remove('active');
     document.getElementById('btn-calendar').classList.remove('active');
+    document.getElementById('btn-trackers').classList.remove('active');
 
+    // Показываем нужный
     if (tabName === 'tasks') {
         document.getElementById('tab-tasks').style.display = 'block';
         document.getElementById('btn-tasks').classList.add('active');
-    } else {
+    } else if (tabName === 'calendar') {
         document.getElementById('tab-calendar').style.display = 'block';
         document.getElementById('btn-calendar').classList.add('active');
+    } else if (tabName === 'trackers') {
+        document.getElementById('tab-trackers').style.display = 'block';
+        document.getElementById('btn-trackers').classList.add('active');
+        updateTrackersUI(); // Обновляем цифры при открытии
     }
 }
-
 // 3. ЛОГИКА ЗАДАЧ
 const taskInput = document.getElementById('task-input');
 const taskList = document.getElementById('task-list');
 const progressCount = document.getElementById('progress-count');
 const progressFill = document.getElementById('progress-fill');
+// Переменные для трекеров (берем из памяти или ставим 0)
+let water = parseInt(localStorage.getItem('tracker-water')) || 0;
+let sport = localStorage.getItem('tracker-sport') === 'true';
+let sleep = parseInt(localStorage.getItem('tracker-sleep')) || 0;
 
 let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
+// --- ЛОГИКА ТРЕКЕРОВ ---
 
+function updateTrackersUI() {
+    document.getElementById('water-count').innerText = water;
+
+    const sportStatus = document.getElementById('sport-status');
+    if (sport) {
+        sportStatus.innerText = "Выполнено ✅";
+        sportStatus.style.color = "#8ECAE6";
+    } else {
+        sportStatus.innerText = "Нет ❌";
+        sportStatus.style.color = "#4A4A4A";
+    }
+
+    document.getElementById('sleep-count').innerText = sleep;
+}
+
+function addWater() {
+    water++;
+    localStorage.setItem('tracker-water', water);
+    updateTrackersUI();
+}
+
+function toggleSport() {
+    sport = !sport;
+    localStorage.setItem('tracker-sport', sport);
+    updateTrackersUI();
+}
+
+function addSleep() {
+    sleep++;
+    localStorage.setItem('tracker-sleep', sleep);
+    updateTrackersUI();
+}
+
+function resetSleep() {
+    sleep = 0;
+    localStorage.setItem('tracker-sleep', sleep);
+    updateTrackersUI();
+}
+
+// Инициализация при загрузке
+updateTrackersUI();
 function renderTasks() {
     taskList.innerHTML = '';
     let completedCount = 0;

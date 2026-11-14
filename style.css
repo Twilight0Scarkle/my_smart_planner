@@ -157,3 +157,49 @@ li:hover { border-color: var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,
     border: none;
     box-shadow: 0 5px 15px rgba(142, 202, 230, 0.4);
 }
+/* --- СТИЛИ ДЛЯ ТРЕКЕРОВ --- */
+.tracker-card {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 8px 25px rgba(163, 143, 188, 0.08);
+    text-align: center;
+    transition: 0.3s;
+}
+
+.tracker-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(142, 202, 230, 0.15);
+}
+
+.tracker-card h3 {
+    margin-top: 0;
+    color: var(--primary);
+    font-family: 'Comfortaa', cursive;
+    font-size: 20px;
+}
+
+.tracker-card p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.tracker-btn {
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tracker-btn:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 5px 15px rgba(163, 143, 188, 0.3);
+}
