@@ -1,30 +1,28 @@
 // --- 1. ИНИЦИАЛИЗАЦИЯ ---
 const now = new Date();
 let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
-let water = parseInt(localStorage.getItem('tracker-water')) || 0;
-let sport = localStorage.getItem('tracker-sport') === 'true';
-let currentMood = localStorage.getItem('tracker-mood') || null;
-
-// Таймер
+let trackers = JSON.parse(localStorage.getItem('myTrackers')) || [];
 let timerInterval;
 let timeLeft = 25 * 60;
 let isRunning = false;
 
-// --- 2. НАВИГАЦИЯ ПО ВКЛАДКАМ ---
+document.getElementById('greeting').innerText = now.getHours() < 12 ? "Доброе утро!" : (now.getHours() < 18 ? "Добрый день!" : "Добрый вечер!");
+document.getElementById('current-date').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+// --- 2. НАВИГАЦИЯ ---
 function showTab(tabName) {
-    const tabs = ['tasks', 'progress', 'trackers', 'calendar'];
-    tabs.forEach(t => {
+    ['tasks', 'progress', 'trackers', 'calendar'].forEach(t => {
         document.getElementById('tab-' + t).style.display = 'none';
         document.getElementById('btn-' + t).classList.remove('active');
     });
     document.getElementById('tab-' + tabName).style.display = 'block';
     document.getElementById('btn-' + tabName).classList.add('active');
 
-    if (tabName === 'progress') updateGlobalProgress();
+    if (tabName === 'progress') renderCharts();
     if (tabName === 'calendar') renderFullYearCalendar();
+    if (tabName === 'trackers') renderTrackers();
 }
 
-// --- 3. ПЕРЕКЛЮЧАТЕЛЬ МАСШТАБА В ПЛАНЕРЕ ---
 function changeScale(scale, btn) {
     document.querySelectorAll('.scale-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.scale-btn').forEach(el => el.classList.remove('active'));
@@ -32,16 +30,15 @@ function changeScale(scale, btn) {
     btn.classList.add('active');
 }
 
-// --- 4. ЛОГИКА ЗАДАЧ ---
+// --- 3. ЗАДАЧИ ---
 const taskInput = document.getElementById('task-input');
 const taskList = document.getElementById('task-list');
 
 function renderTasks() {
     taskList.innerHTML = '';
-    let completed = 0;
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
-        if (task.completed) { li.classList.add('completed'); completed++; }
+        if (task.completed) li.classList.add('completed');
 
         const colorBar = document.createElement('div');
         colorBar.style.cssText = "width:5px; height:30px; border-radius:5px; margin-right:10px; position:absolute; left:0;";
@@ -61,11 +58,6 @@ function renderTasks() {
         taskList.appendChild(li);
     });
     localStorage.setItem('myTasks', JSON.stringify(tasks));
-
-    if(document.getElementById('progress-count')) {
-        document.getElementById('progress-count').innerText = `${completed} / ${tasks.length}`;
-        document.getElementById('progress-fill').style.width = tasks.length === 0 ? '0%' : `${(completed / tasks.length) * 100}%`;
-    }
 }
 
 function addTask() {
@@ -78,51 +70,119 @@ function addTask() {
 }
 taskInput.addEventListener('keypress', e => { if (e.key === 'Enter') addTask(); });
 
-// --- 5. ПРОГРЕСС ---
-function updateGlobalProgress() {
+// --- 4. ДИАГРАММЫ ПРОГРЕССА ---
+let charts = {}; // Храним графики, чтобы обновлять их
+
+function renderCharts() {
     const total = tasks.length;
     const completed = tasks.filter(t => t.completed).length;
-    const percent = total === 0 ? 0 : (completed / total) * 100;
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
-    document.getElementById('prog-day-text').innerText = `${completed} / ${total}`;
-    document.getElementById('prog-day-fill').style.width = `${percent}%`;
-    // Для примера, остальные прогрессы дублируют дневной
-    document.getElementById('prog-week-text').innerText = `${completed} / ${total}`;
-    document.getElementById('prog-week-fill').style.width = `${percent}%`;
-    document.getElementById('prog-month-text').innerText = `${completed} / ${total}`;
-    document.getElementById('prog-month-fill').style.width = `${percent}%`;
-    document.getElementById('prog-year-text').innerText = `${completed} / ${total}`;
-    document.getElementById('prog-year-fill').style.width = `${percent}%`;
+    const chartConfig = (id, label, color) => {
+        if (charts[id]) charts[id].destroy(); // Удаляем старый график перед созданием нового
+        const ctx = document.getElementById(id).getContext('2d');
+        charts[id] = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Выполнено', 'Осталось'],
+                datasets: [{
+                    data: [percent, 100 - percent],
+                    backgroundColor: [color, '#EAE6F0'],
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                animation: { animateScale: true }
+            }
+        });
+    };
+
+    // Для примера, все графики показывают общий прогресс задач
+    chartConfig('chart-day', 'День', '#A38FBC');
+    chartConfig('chart-week', 'Неделя', '#8ECAE6');
+    chartConfig('chart-month', 'Месяц', '#FFB74D');
+    chartConfig('chart-year', 'Год', '#D1A8B7');
+
+    // Добавляем текст в центр круга
+    setTimeout(() => {
+        document.querySelectorAll('.chart-card').forEach(card => {
+            if(!card.querySelector('.percent-text')) {
+                const txt = document.createElement('div');
+                txt.className = 'percent-text';
+                txt.style.cssText = 'position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:20px; font-weight:bold; color:var(--primary); pointer-events:none;';
+                txt.innerText = percent + '%';
+                card.style.position = 'relative';
+                card.appendChild(txt);
+            } else {
+                card.querySelector('.percent-text').innerText = percent + '%';
+            }
+        });
+    }, 100);
 }
 
-// --- 6. ТРЕКЕРЫ И ПОМОДОРО ---
-function addWater() { water++; localStorage.setItem('tracker-water', water); document.getElementById('water-count').innerText = water; }
-function toggleSport() {
-    sport = !sport; localStorage.setItem('tracker-sport', sport);
-    const el = document.getElementById('sport-status');
-    el.innerText = sport ? "Да ✅" : "Нет ❌";
-    el.style.color = sport ? "#8ECAE6" : "#4A4A4A";
+// --- 5. КАСТОМНЫЕ ТРЕКЕРЫ ---
+function renderTrackers() {
+    const container = document.getElementById('custom-trackers-container');
+    container.innerHTML = '';
+
+    if (trackers.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#888; width:100%;">У тебя пока нет трекеров. Создай первый!</p>';
+        return;
+    }
+
+    trackers.forEach((tracker, index) => {
+        const card = document.createElement('div');
+        card.className = 'custom-tracker-card';
+        card.innerHTML = `
+            <h3>${tracker.name}</h3>
+            <div class="progress-text">${tracker.current} / ${tracker.goal}</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${(tracker.current/tracker.goal)*100}%; background-color: var(--primary);"></div></div>
+            <div class="tracker-controls">
+                <button onclick="updateTracker(${index}, -1)">-</button>
+                <button onclick="updateTracker(${index}, 1)">+</button>
+            </div>
+            <button class="delete-tracker" onclick="deleteTracker(${index})">Удалить</button>
+        `;
+        container.appendChild(card);
+    });
 }
 
-function updateTimerDisplay() {
-    const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-    document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+function createTracker() {
+    const name = document.getElementById('new-tracker-name').value.trim();
+    const goal = parseInt(document.getElementById('new-tracker-goal').value);
+    if (name && goal > 0) {
+        trackers.push({ name: name, goal: goal, current: 0 });
+        localStorage.setItem('myTrackers', JSON.stringify(trackers));
+        document.getElementById('new-tracker-name').value = '';
+        document.getElementById('new-tracker-goal').value = '';
+        renderTrackers();
+    }
 }
-function startTimer() {
-    const btn = document.getElementById('timer-btn');
-    if (isRunning) { clearInterval(timerInterval); btn.innerText = "Продолжить"; isRunning = false; return; }
-    isRunning = true; btn.innerText = "Пауза";
-    timerInterval = setInterval(() => {
-        if (timeLeft > 0) { timeLeft--; updateTimerDisplay(); }
-        else { clearInterval(timerInterval); alert("Время вышло!"); startTimer(); resetTimer(); }
-    }, 1000);
-}
-function resetTimer() { clearInterval(timerInterval); isRunning = false; timeLeft = 25 * 60; updateTimerDisplay(); document.getElementById('timer-btn').innerText = "Старт"; }
 
-// --- 7. КАЛЕНДАРЬ НА ГОД ---
+function updateTracker(index, amount) {
+    trackers[index].current += amount;
+    if (trackers[index].current < 0) trackers[index].current = 0;
+    if (trackers[index].current > trackers[index].goal) trackers[index].current = trackers[index].goal;
+    localStorage.setItem('myTrackers', JSON.stringify(trackers));
+    renderTrackers();
+}
+
+function deleteTracker(index) {
+    trackers.splice(index, 1);
+    localStorage.setItem('myTrackers', JSON.stringify(trackers));
+    renderTrackers();
+}
+
+// --- 6. КАЛЕНДАРЬ НА ГОД ---
 function renderFullYearCalendar() {
     const container = document.getElementById('full-year-calendar');
-    if (container.innerHTML !== '') return; // Рисуем только один раз
+    if (container.innerHTML !== '') return;
 
     const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
     const year = now.getFullYear();
@@ -130,9 +190,7 @@ function renderFullYearCalendar() {
     for (let m = 0; m < 12; m++) {
         const monthDiv = document.createElement('div');
         monthDiv.className = 'month-card';
-
         let html = `<h4>${months[m]}</h4><div class="month-days-grid">`;
-        // Дни недели
         ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => html += `<div style="font-weight:bold; color:#aaa;">${d}</div>`);
 
         const firstDay = new Date(year, m, 1).getDay();
@@ -140,7 +198,6 @@ function renderFullYearCalendar() {
         let emptyCells = firstDay === 0 ? 6 : firstDay - 1;
 
         for (let i = 0; i < emptyCells; i++) html += `<div class="empty"></div>`;
-
         for (let d = 1; d <= daysInMonth; d++) {
             const isToday = d === now.getDate() && m === now.getMonth();
             html += `<div class="${isToday ? 'today' : ''}">${d}</div>`;
@@ -151,6 +208,6 @@ function renderFullYearCalendar() {
     }
 }
 
-// --- 8. ЗАПУСК ---
+// Запуск
 renderTasks();
-updateTimerDisplay();
+renderTrackers();
