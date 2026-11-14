@@ -4,30 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мой умный планер</title>
-
-    <!-- Красивые шрифты -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-
-    <!-- Наши стили -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <!-- Меню навигации -->
     <div class="nav-menu">
-        <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">✨ Мои задачи</button>
-        <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">🌿 Календарь</button>
+        <button onclick="showTab('tasks')" id="btn-tasks" class="nav-btn active">✨ Планер</button>
+        <button onclick="showTab('progress')" id="btn-progress" class="nav-btn">📊 Прогресс</button>
         <button onclick="showTab('trackers')" id="btn-trackers" class="nav-btn">🌸 Трекеры</button>
+        <button onclick="showTab('calendar')" id="btn-calendar" class="nav-btn">📅 Календарь</button>
     </div>
 
-    <!-- ЭКРАН 1: ЗАДАЧИ И ПЛАНЫ -->
+    <!-- ЭКРАН 1: ПЛАНЕР -->
     <div class="planner-container" id="tab-tasks">
         <h2 id="greeting">Привет!</h2>
         <div class="date-display" id="current-date"></div>
 
-        <!-- Переключатель масштаба времени -->
         <div class="time-scale-switcher">
             <button onclick="changeScale('day', this)" class="scale-btn active">День</button>
             <button onclick="changeScale('week', this)" class="scale-btn">Неделя</button>
@@ -35,18 +29,8 @@
             <button onclick="changeScale('year', this)" class="scale-btn">Год</button>
         </div>
 
-        <!-- БЛОК: ДЕНЬ -->
+        <!-- Масштаб: День -->
         <div id="scale-day" class="scale-content" style="display: block;">
-            <div class="progress-container">
-                <div class="progress-text">
-                    <span>Прогресс дня:</span>
-                    <span id="progress-count">0 / 0</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progress-fill"></div>
-                </div>
-            </div>
-
             <div class="input-group">
                 <input type="text" id="task-input" placeholder="Что нужно сделать?" autocomplete="off">
                 <select id="task-category">
@@ -56,101 +40,36 @@
                 </select>
                 <button onclick="addTask()">+</button>
             </div>
-
             <ul id="task-list"></ul>
             <button class="clear-btn" onclick="clearCompleted()">Удалить выполненные</button>
         </div>
 
-                <!-- БЛОК: НЕДЕЛЯ -->
+        <!-- Масштаб: Неделя -->
         <div id="scale-week" class="scale-content" style="display: none;">
             <div class="week-grid">
-                <!-- Понедельник -->
-                <div class="week-day">
-                    <div class="week-day-header">Пн</div>
-                    <div class="week-day-content" contenteditable="true">Нажми, чтобы писать...</div>
-                </div>
-                <!-- Вторник -->
-                <div class="week-day">
-                    <div class="week-day-header">Вт</div>
-                    <div class="week-day-content" contenteditable="true"></div>
-                </div>
-                <!-- Среда -->
-                <div class="week-day">
-                    <div class="week-day-header">Ср</div>
-                    <div class="week-day-content" contenteditable="true"></div>
-                </div>
-                <!-- Четверг -->
-                <div class="week-day">
-                    <div class="week-day-header">Чт</div>
-                    <div class="week-day-content" contenteditable="true"></div>
-                </div>
-                <!-- Пятница -->
-                <div class="week-day">
-                    <div class="week-day-header">Пт</div>
-                    <div class="week-day-content" contenteditable="true"></div>
-                </div>
-                <!-- Суббота -->
-                <div class="week-day">
-                    <div class="week-day-header" style="color: #D1A8B7;">Сб</div>
-                    <div class="week-day-content" contenteditable="true"></div>
-                </div>
-                <!-- Воскресенье -->
-                <div class="week-day">
-                    <div class="week-day-header" style="color: #D1A8B7;">Вс</div>
-                    <div class="week-day-content" contenteditable="true"></div>
-                </div>
+                <div class="week-day"><div class="week-day-header">Пн</div><div class="week-day-content" contenteditable="true"></div></div>
+                <div class="week-day"><div class="week-day-header">Вт</div><div class="week-day-content" contenteditable="true"></div></div>
+                <div class="week-day"><div class="week-day-header">Ср</div><div class="week-day-content" contenteditable="true"></div></div>
+                <div class="week-day"><div class="week-day-header">Чт</div><div class="week-day-content" contenteditable="true"></div></div>
+                <div class="week-day"><div class="week-day-header">Пт</div><div class="week-day-content" contenteditable="true"></div></div>
+                <div class="week-day"><div class="week-day-header" style="color: #D1A8B7;">Сб</div><div class="week-day-content" contenteditable="true"></div></div>
+                <div class="week-day"><div class="week-day-header" style="color: #D1A8B7;">Вс</div><div class="week-day-content" contenteditable="true"></div></div>
             </div>
         </div>
 
-               <!-- БЛОК: МЕСЯЦ -->
+        <!-- Масштаб: Месяц -->
         <div id="scale-month" class="scale-content" style="display: none;">
             <div class="month-grid">
-                <!-- Дни недели -->
-                <div class="month-day-header">Пн</div>
-                <div class="month-day-header">Вт</div>
-                <div class="month-day-header">Ср</div>
-                <div class="month-day-header">Чт</div>
-                <div class="month-day-header">Пт</div>
-                <div class="month-day-header">Сб</div>
-                <div class="month-day-header">Вс</div>
-
-                <!-- 4 недели по 7 дней (для простоты и эстетики) -->
-                <!-- Неделя 1 -->
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <!-- Неделя 2 -->
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <!-- Неделя 3 -->
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <!-- Неделя 4 -->
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
-                <div class="month-cell" contenteditable="true"></div>
+                <div class="month-day-header">Пн</div><div class="month-day-header">Вт</div><div class="month-day-header">Ср</div>
+                <div class="month-day-header">Чт</div><div class="month-day-header">Пт</div><div class="month-day-header">Сб</div><div class="month-day-header">Вс</div>
+                <!-- Генерируем 28 ячеек -->
+                <script>
+                    for(let i=0; i<28; i++) document.write('<div class="month-cell" contenteditable="true"></div>');
+                </script>
             </div>
         </div>
 
-               <!-- БЛОК: ГОД -->
+        <!-- Масштаб: Год -->
         <div id="scale-year" class="scale-content" style="display: none;">
             <div class="year-grid">
                 <div class="year-month" contenteditable="true"><span class="year-month-title">Январь</span></div>
@@ -167,56 +86,53 @@
                 <div class="year-month" contenteditable="true"><span class="year-month-title">Декабрь</span></div>
             </div>
         </div>
+    </div>
 
-    <!-- ЭКРАН 2: КАЛЕНДАРЬ -->
-    <div class="planner-container" id="tab-calendar" style="display: none; max-width: 800px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>Календарь</h2>
-            <div style="font-size: 18px; font-weight: bold; color: var(--primary);" id="calendar-month-year">Загрузка...</div>
+    <!-- ЭКРАН 2: ПРОГРЕСС -->
+    <div class="planner-container" id="tab-progress" style="display: none;">
+        <h2>📊 Мой Прогресс</h2>
+        <p style="color: #888; margin-bottom: 20px;">Сколько задач выполнено?</p>
+
+        <div class="progress-block">
+            <div class="progress-text"><span>День</span> <span id="prog-day-text">0 / 0</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-day-fill" style="width: 0%;"></div></div>
         </div>
-
-        <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
-            <div style="color: #888; font-weight: bold;">Пн</div>
-            <div style="color: #888; font-weight: bold;">Вт</div>
-            <div style="color: #888; font-weight: bold;">Ср</div>
-            <div style="color: #888; font-weight: bold;">Чт</div>
-            <div style="color: #888; font-weight: bold;">Пт</div>
-            <div style="color: #888; font-weight: bold;">Сб</div>
-            <div style="color: #888; font-weight: bold;">Вс</div>
+        <div class="progress-block">
+            <div class="progress-text"><span>Неделя</span> <span id="prog-week-text">0 / 0</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-week-fill" style="width: 0%;"></div></div>
+        </div>
+        <div class="progress-block">
+            <div class="progress-text"><span>Месяц</span> <span id="prog-month-text">0 / 0</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-month-fill" style="width: 0%;"></div></div>
+        </div>
+        <div class="progress-block">
+            <div class="progress-text"><span>Год</span> <span id="prog-year-text">0 / 0</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-year-fill" style="width: 0%;"></div></div>
         </div>
     </div>
 
     <!-- ЭКРАН 3: ТРЕКЕРЫ -->
     <div class="planner-container" id="tab-trackers" style="display: none; max-width: 800px;">
-        <h2 style="text-align: center; margin-bottom: 30px;">Мои Трекеры</h2>
+        <h2 style="text-align: center; margin-bottom: 20px;">🌸 Мои Трекеры</h2>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <!-- Переключатель трекеров -->
+        <div class="time-scale-switcher" style="max-width: 400px; margin: 0 auto 20px auto;">
+            <button onclick="changeTrackerScale('day', this)" class="scale-btn active">День</button>
+            <button onclick="changeTrackerScale('week', this)" class="scale-btn">Неделя</button>
+            <button onclick="changeTrackerScale('month', this)" class="scale-btn">Месяц</button>
+        </div>
 
-            <!-- ВОДА -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
             <div class="tracker-card">
                 <h3>💧 Вода</h3>
-                <p>Выпито стаканов: <span id="water-count">0</span> / 8</p>
-                <button onclick="addWater()" class="tracker-btn">+ Выпить стакан</button>
+                <p>Выпито: <span id="water-count">0</span> / 8</p>
+                <button onclick="addWater()" class="tracker-btn">+ Стакан</button>
             </div>
-
-            <!-- СПОРТ -->
             <div class="tracker-card">
                 <h3>🏃‍♀️ Спорт</h3>
-                <p>Тренировка сегодня: <span id="sport-status">Нет ❌</span></p>
-                <button onclick="toggleSport()" class="tracker-btn">Отметить тренировку</button>
+                <p>Статус: <span id="sport-status">Нет ❌</span></p>
+                <button onclick="toggleSport()" class="tracker-btn">Отметить</button>
             </div>
-
-            <!-- СОН -->
-            <div class="tracker-card">
-                <h3>🌙 Сон</h3>
-                <p>Часов сна: <span id="sleep-count">0</span></p>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="addSleep()" class="tracker-btn" style="flex: 1;">+1 час</button>
-                    <button onclick="resetSleep()" class="tracker-btn" style="flex: 1; background-color: #EAE6F0; color: #4A4A4A;">Сброс</button>
-                </div>
-            </div>
-
-            <!-- ПОМОДОРО -->
             <div class="tracker-card">
                 <h3>⏳ Помодоро</h3>
                 <p>Время: <span id="timer-display" style="font-size: 24px; font-weight: bold; color: var(--primary);">25:00</span></p>
@@ -225,24 +141,17 @@
                     <button onclick="resetTimer()" class="tracker-btn" style="background-color: #EAE6F0; color: #4A4A4A;">Сброс</button>
                 </div>
             </div>
-
-            <!-- НАСТРОЕНИЕ -->
-            <div class="tracker-card">
-                <h3>🎭 Настроение дня</h3>
-                <p>Как ты себя чувствуешь?</p>
-                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
-                    <span onclick="setMood('😊', this)" class="mood-emoji">😊</span>
-                    <span onclick="setMood('😐', this)" class="mood-emoji">😐</span>
-                    <span onclick="setMood('😔', this)" class="mood-emoji">😔</span>
-                    <span onclick="setMood('🔥', this)" class="mood-emoji">🔥</span>
-                </div>
-                <p style="margin-top: 15px; font-size: 14px; color: #888;">Твое настроение: <span id="mood-display">не выбрано</span></p>
-            </div>
-
         </div>
     </div>
 
-    <!-- Подключаем скрипт в самом конце! -->
+    <!-- ЭКРАН 4: КАЛЕНДАРЬ НА ГОД -->
+    <div class="planner-container" id="tab-calendar" style="display: none; max-width: 1000px;">
+        <h2 style="text-align: center; margin-bottom: 30px;">📅 Календарь на 2026 год</h2>
+        <div class="year-grid" id="full-year-calendar">
+            <!-- Скрипт сгенерирует 12 месяцев -->
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,331 +1,156 @@
-// ==========================================
-// 1. ПРИВЕТСТВИЕ И ДАТА
-// ==========================================
+// --- 1. ИНИЦИАЛИЗАЦИЯ ---
 const now = new Date();
-const hours = now.getHours();
-let greetingText = "Доброй ночи!";
-if (hours >= 5 && hours < 12) greetingText = "Доброе утро!";
-else if (hours >= 12 && hours < 18) greetingText = "Добрый день!";
-else if (hours >= 18 && hours < 23) greetingText = "Добрый вечер!";
-
-document.getElementById('greeting').innerText = greetingText;
-document.getElementById('current-date').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-// ==========================================
-// 2. ПЕРЕМЕННЫЕ И ЭЛЕМЕНТЫ
-// ==========================================
-const taskInput = document.getElementById('task-input');
-const taskList = document.getElementById('task-list');
-const progressCount = document.getElementById('progress-count');
-const progressFill = document.getElementById('progress-fill');
-
-// Переменные для трекеров
+let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
 let water = parseInt(localStorage.getItem('tracker-water')) || 0;
 let sport = localStorage.getItem('tracker-sport') === 'true';
-let sleep = parseInt(localStorage.getItem('tracker-sleep')) || 0;
-
-// Переменные для Помодоро и Настроения
-let timerInterval;
-let timeLeft = 25 * 60; // 25 минут в секундах
-let isRunning = false;
 let currentMood = localStorage.getItem('tracker-mood') || null;
 
-let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
+// Таймер
+let timerInterval;
+let timeLeft = 25 * 60;
+let isRunning = false;
 
-// ==========================================
-// 3. ЛОГИКА ЗАДАЧ
-// ==========================================
+// --- 2. НАВИГАЦИЯ ПО ВКЛАДКАМ ---
+function showTab(tabName) {
+    const tabs = ['tasks', 'progress', 'trackers', 'calendar'];
+    tabs.forEach(t => {
+        document.getElementById('tab-' + t).style.display = 'none';
+        document.getElementById('btn-' + t).classList.remove('active');
+    });
+    document.getElementById('tab-' + tabName).style.display = 'block';
+    document.getElementById('btn-' + tabName).classList.add('active');
+
+    if (tabName === 'progress') updateGlobalProgress();
+    if (tabName === 'calendar') renderFullYearCalendar();
+}
+
+// --- 3. ПЕРЕКЛЮЧАТЕЛЬ МАСШТАБА В ПЛАНЕРЕ ---
+function changeScale(scale, btn) {
+    document.querySelectorAll('.scale-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.scale-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('scale-' + scale).style.display = 'block';
+    btn.classList.add('active');
+}
+
+// --- 4. ЛОГИКА ЗАДАЧ ---
+const taskInput = document.getElementById('task-input');
+const taskList = document.getElementById('task-list');
+
 function renderTasks() {
     taskList.innerHTML = '';
-    let completedCount = 0;
-
+    let completed = 0;
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
-        if (task.completed) {
-            li.classList.add('completed');
-            completedCount++;
-        }
+        if (task.completed) { li.classList.add('completed'); completed++; }
 
-        // Цветная полоска категории
         const colorBar = document.createElement('div');
-        colorBar.style.width = '5px';
-        colorBar.style.height = '30px';
-        colorBar.style.borderRadius = '5px';
-        colorBar.style.marginRight = '10px';
-        colorBar.style.position = 'absolute';
-        colorBar.style.left = '0';
-        if (task.category === 'работа') colorBar.style.backgroundColor = '#A38FBC'; // Лавандовый
-        else if (task.category === 'учеба') colorBar.style.backgroundColor = '#8ECAE6'; // Голубой
-        else colorBar.style.backgroundColor = '#FFB74D'; // Оранжевый
-        li.appendChild(colorBar);
+        colorBar.style.cssText = "width:5px; height:30px; border-radius:5px; margin-right:10px; position:absolute; left:0;";
+        colorBar.style.backgroundColor = task.category === 'работа' ? '#A38FBC' : (task.category === 'учеба' ? '#8ECAE6' : '#FFB74D');
 
-        // Текст
         const span = document.createElement('span');
         span.className = 'task-text';
         span.innerText = task.text;
-        span.onclick = () => toggleTask(index);
+        span.onclick = () => { tasks[index].completed = !tasks[index].completed; renderTasks(); };
 
-        // Кнопка удаления
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.innerText = '×';
-        deleteBtn.onclick = () => deleteTask(index);
+        const del = document.createElement('button');
+        del.className = 'delete-btn';
+        del.innerText = '×';
+        del.onclick = () => { tasks.splice(index, 1); renderTasks(); };
 
-        li.appendChild(span);
-        li.appendChild(deleteBtn);
+        li.appendChild(colorBar); li.appendChild(span); li.appendChild(del);
         taskList.appendChild(li);
     });
-
     localStorage.setItem('myTasks', JSON.stringify(tasks));
 
-    // Обновляем прогресс
-    const total = tasks.length;
-    progressCount.innerText = `${completedCount} / ${total}`;
-    const percent = total === 0 ? 0 : (completedCount / total) * 100;
-    progressFill.style.width = `${percent}%`;
+    if(document.getElementById('progress-count')) {
+        document.getElementById('progress-count').innerText = `${completed} / ${tasks.length}`;
+        document.getElementById('progress-fill').style.width = tasks.length === 0 ? '0%' : `${(completed / tasks.length) * 100}%`;
+    }
 }
 
 function addTask() {
     const text = taskInput.value.trim();
-    const category = document.getElementById('task-category').value;
     if (text !== '') {
-        tasks.push({ text: text, completed: false, category: category });
+        tasks.push({ text: text, completed: false, category: document.getElementById('task-category').value });
         taskInput.value = '';
         renderTasks();
     }
 }
+taskInput.addEventListener('keypress', e => { if (e.key === 'Enter') addTask(); });
 
-taskInput.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') addTask();
-});
+// --- 5. ПРОГРЕСС ---
+function updateGlobalProgress() {
+    const total = tasks.length;
+    const completed = tasks.filter(t => t.completed).length;
+    const percent = total === 0 ? 0 : (completed / total) * 100;
 
-function toggleTask(index) {
-    tasks[index].completed = !tasks[index].completed;
-    renderTasks();
+    document.getElementById('prog-day-text').innerText = `${completed} / ${total}`;
+    document.getElementById('prog-day-fill').style.width = `${percent}%`;
+    // Для примера, остальные прогрессы дублируют дневной
+    document.getElementById('prog-week-text').innerText = `${completed} / ${total}`;
+    document.getElementById('prog-week-fill').style.width = `${percent}%`;
+    document.getElementById('prog-month-text').innerText = `${completed} / ${total}`;
+    document.getElementById('prog-month-fill').style.width = `${percent}%`;
+    document.getElementById('prog-year-text').innerText = `${completed} / ${total}`;
+    document.getElementById('prog-year-fill').style.width = `${percent}%`;
 }
 
-function deleteTask(index) {
-    tasks.splice(index, 1);
-    renderTasks();
-}
-
-function clearCompleted() {
-    tasks = tasks.filter(task => !task.completed);
-    renderTasks();
-}
-
-// ==========================================
-// 4. ЛОГИКА КАЛЕНДАРЯ
-// ==========================================
-function generateCalendar() {
-    const grid = document.getElementById('calendar-grid');
-    const monthYearDisplay = document.getElementById('calendar-month-year');
-
-    if (!grid) return; // Защита, если элемент не найден
-
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-
-    const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-    monthYearDisplay.innerText = `${months[currentMonth]} ${currentYear}`;
-
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    const dayNames = Array.from(grid.children).slice(0, 7);
-    grid.innerHTML = '';
-    dayNames.forEach(day => grid.appendChild(day));
-
-    let emptyCells = firstDay === 0 ? 6 : firstDay - 1;
-
-    for (let i = 0; i < emptyCells; i++) {
-        const emptyDiv = document.createElement('div');
-        emptyDiv.className = 'calendar-day empty';
-        grid.appendChild(emptyDiv);
-    }
-
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'calendar-day';
-        dayDiv.innerText = i;
-        if (i === today.getDate()) {
-            dayDiv.classList.add('today');
-        }
-        grid.appendChild(dayDiv);
-    }
-}
-
-// ==========================================
-// 5. ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
-// ==========================================
-function showTab(tabName) {
-    // Скрываем все экраны
-    document.getElementById('tab-tasks').style.display = 'none';
-    document.getElementById('tab-calendar').style.display = 'none';
-    document.getElementById('tab-trackers').style.display = 'none';
-
-    // Убираем активный класс со всех кнопок
-    document.getElementById('btn-tasks').classList.remove('active');
-    document.getElementById('btn-calendar').classList.remove('active');
-    document.getElementById('btn-trackers').classList.remove('active');
-
-    // Показываем нужный
-    if (tabName === 'tasks') {
-        document.getElementById('tab-tasks').style.display = 'block';
-        document.getElementById('btn-tasks').classList.add('active');
-    } else if (tabName === 'calendar') {
-        document.getElementById('tab-calendar').style.display = 'block';
-        document.getElementById('btn-calendar').classList.add('active');
-    } else if (tabName === 'trackers') {
-        document.getElementById('tab-trackers').style.display = 'block';
-        document.getElementById('btn-trackers').classList.add('active');
-        updateTrackersUI(); // Обновляем цифры при открытии
-    }
-}
-
-// ==========================================
-// 6. ЛОГИКА ТРЕКЕРОВ
-// ==========================================
-function updateTrackersUI() {
-    // Вода
-    document.getElementById('water-count').innerText = water;
-
-    // Спорт
-    const sportStatus = document.getElementById('sport-status');
-    if (sport) {
-        sportStatus.innerText = "Выполнено ✅";
-        sportStatus.style.color = "#8ECAE6";
-    } else {
-        sportStatus.innerText = "Нет ❌";
-        sportStatus.style.color = "#4A4A4A";
-    }
-
-    // Сон
-    document.getElementById('sleep-count').innerText = sleep;
-
-    // Настроение
-    if (currentMood) {
-        document.getElementById('mood-display').innerText = currentMood;
-        // Ищем нужный смайлик и делаем его цветным
-        document.querySelectorAll('.mood-emoji').forEach(el => {
-            if (el.innerText === currentMood) el.classList.add('active');
-        });
-    }
-}
-
-function addWater() {
-    water++;
-    localStorage.setItem('tracker-water', water);
-    updateTrackersUI();
-}
-
+// --- 6. ТРЕКЕРЫ И ПОМОДОРО ---
+function addWater() { water++; localStorage.setItem('tracker-water', water); document.getElementById('water-count').innerText = water; }
 function toggleSport() {
-    sport = !sport;
-    localStorage.setItem('tracker-sport', sport);
-    updateTrackersUI();
+    sport = !sport; localStorage.setItem('tracker-sport', sport);
+    const el = document.getElementById('sport-status');
+    el.innerText = sport ? "Да ✅" : "Нет ❌";
+    el.style.color = sport ? "#8ECAE6" : "#4A4A4A";
 }
 
-function addSleep() {
-    sleep++;
-    localStorage.setItem('tracker-sleep', sleep);
-    updateTrackersUI();
-}
-
-function resetSleep() {
-    sleep = 0;
-    localStorage.setItem('tracker-sleep', sleep);
-    updateTrackersUI();
-}
-
-// ==========================================
-// 7. ЛОГИКА ПОМОДОРО
-// ==========================================
 function updateTimerDisplay() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    const display = document.getElementById('timer-display');
-    if (display) {
-        display.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
+    const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+    document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
-
 function startTimer() {
     const btn = document.getElementById('timer-btn');
-    if (isRunning) {
-        clearInterval(timerInterval);
-        isRunning = false;
-        btn.innerText = "Продолжить";
-        btn.style.backgroundColor = "#8ECAE6"; // Голубой при паузе
-        return;
-    }
-
-    isRunning = true;
-    btn.innerText = "Пауза";
-    btn.style.backgroundColor = "#E6A8B7"; // Розовый при работе
-
+    if (isRunning) { clearInterval(timerInterval); btn.innerText = "Продолжить"; isRunning = false; return; }
+    isRunning = true; btn.innerText = "Пауза";
     timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
-            timeLeft--;
-            updateTimerDisplay();
-        } else {
-            clearInterval(timerInterval);
-            isRunning = false;
-            btn.innerText = "Старт";
-            btn.style.backgroundColor = "#A38FBC";
-            alert("Время вышло! Пора отдохнуть 🌿");
-        }
+        if (timeLeft > 0) { timeLeft--; updateTimerDisplay(); }
+        else { clearInterval(timerInterval); alert("Время вышло!"); startTimer(); resetTimer(); }
     }, 1000);
 }
+function resetTimer() { clearInterval(timerInterval); isRunning = false; timeLeft = 25 * 60; updateTimerDisplay(); document.getElementById('timer-btn').innerText = "Старт"; }
 
-function resetTimer() {
-    clearInterval(timerInterval);
-    isRunning = false;
-    timeLeft = 25 * 60;
-    updateTimerDisplay();
-    const btn = document.getElementById('timer-btn');
-    if (btn) {
-        btn.innerText = "Старт";
-        btn.style.backgroundColor = "#A38FBC";
+// --- 7. КАЛЕНДАРЬ НА ГОД ---
+function renderFullYearCalendar() {
+    const container = document.getElementById('full-year-calendar');
+    if (container.innerHTML !== '') return; // Рисуем только один раз
+
+    const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+    const year = now.getFullYear();
+
+    for (let m = 0; m < 12; m++) {
+        const monthDiv = document.createElement('div');
+        monthDiv.className = 'month-card';
+
+        let html = `<h4>${months[m]}</h4><div class="month-days-grid">`;
+        // Дни недели
+        ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => html += `<div style="font-weight:bold; color:#aaa;">${d}</div>`);
+
+        const firstDay = new Date(year, m, 1).getDay();
+        const daysInMonth = new Date(year, m + 1, 0).getDate();
+        let emptyCells = firstDay === 0 ? 6 : firstDay - 1;
+
+        for (let i = 0; i < emptyCells; i++) html += `<div class="empty"></div>`;
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const isToday = d === now.getDate() && m === now.getMonth();
+            html += `<div class="${isToday ? 'today' : ''}">${d}</div>`;
+        }
+        html += `</div>`;
+        monthDiv.innerHTML = html;
+        container.appendChild(monthDiv);
     }
 }
 
-// ==========================================
-// 8. ЛОГИКА НАСТРОЕНИЯ
-// ==========================================
-function setMood(emoji, element) {
-    currentMood = emoji;
-    localStorage.setItem('tracker-mood', currentMood);
-    document.getElementById('mood-display').innerText = currentMood;
-
-    // Убираем выделение со всех, ставим на выбранный
-    document.querySelectorAll('.mood-emoji').forEach(el => el.classList.remove('active'));
-    element.classList.add('active');
-}
-
-// ==========================================
-// 9. ЗАПУСК ПРИ ЗАГРУЗКЕ
-// ==========================================
+// --- 8. ЗАПУСК ---
 renderTasks();
-generateCalendar();
-updateTrackersUI();
 updateTimerDisplay();
-
-// ==========================================
-// 10. ПЕРЕКЛЮЧЕНИЕ МАСШТАБА ВРЕМЕНИ
-// ==========================================
-function changeScale(scale, btnElement) {
-    // 1. Скрываем все блоки масштабов
-    document.getElementById('scale-day').style.display = 'none';
-    document.getElementById('scale-week').style.display = 'none';
-    document.getElementById('scale-month').style.display = 'none';
-    document.getElementById('scale-year').style.display = 'none';
-
-    // 2. Убираем класс active со всех кнопок переключателя
-    const buttons = document.querySelectorAll('.scale-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-
-    // 3. Показываем нужный блок и делаем кнопку активной
-    document.getElementById('scale-' + scale).style.display = 'block';
-    if(btnElement) btnElement.classList.add('active');
-}

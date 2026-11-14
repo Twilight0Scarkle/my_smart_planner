@@ -370,3 +370,42 @@ li:hover { border-color: var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 5px;
 }
+/* --- БЛОКИ ПРОГРЕССА --- */
+.progress-block {
+    margin-bottom: 20px;
+    background-color: var(--bg-color);
+    padding: 15px;
+    border-radius: 12px;
+}
+.progress-block .progress-text { margin-bottom: 10px; }
+
+/* --- ТРЕКЕРЫ --- */
+.tracker-card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+.tracker-card h3 { color: var(--primary); font-family: 'Comfortaa', cursive; margin-top: 0; }
+.tracker-btn {
+    width: 100%; background-color: var(--primary); color: white;
+    border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 10px;
+}
+
+/* --- КАЛЕНДАРЬ НА ГОД --- */
+.year-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.month-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+}
+.month-card h4 { text-align: center; color: var(--primary); margin: 0 0 10px 0; font-family: 'Comfortaa', cursive;}
+.month-days-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center;
+}
+.month-days-grid div { padding: 4px; font-size: 12px; border-radius: 4px; cursor: pointer; }
+.month-days-grid div:hover { background-color: white; border: 1px solid var(--primary); }
+.month-days-grid .empty { background: none; cursor: default; }
+.month-days-grid .today { background-color: var(--accent); color: white; font-weight: bold; }
